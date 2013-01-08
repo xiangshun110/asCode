@@ -78,6 +78,31 @@
 			return temp;
 		}
 		
+		/**
+		 * 用于货币数值显示,例如10000，变成:"10,000"
+		 * @param	num
+		 * @return
+		 */
+		public static function moneyNumberToString(num:int):String {
+			var str:String = String(num);
+			var ary:Array = str.split("");
+			str = "";
+			var ary2:Array = [];
+			ary = ary.reverse();
+			
+			for (var i = 0; i < ary.length; i++ ) {
+				if (i != 0 && (i % 3) == 0) {
+					ary2.push(",");
+				}
+				ary2.push(ary[i]);
+			}
+			
+			ary2 = ary2.reverse();
+			str = ary2.join("");
+			//trace("str: " + str);
+			return str;
+		}
+		
 	}
 
 }
