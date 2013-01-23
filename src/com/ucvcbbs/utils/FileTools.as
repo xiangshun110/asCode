@@ -29,7 +29,9 @@
 		 */
 		public static function deleteFromPath(path:String):void {
 			var f:File = getFileFromPath(path);
-			f.deleteFile();
+			if(f){
+				f.deleteFile();
+			}
 		}
 		
 		/**
@@ -41,18 +43,22 @@
 			var num:int = url.indexOf("http://");
 			var str:String;
 			if (num != -1) {
-				str = AppTools.getAppPath() + "/downLoad/" + url.substring(7);
+				str =  url.substring(7);
+				
 			}else {
 				return "";
 			}
 			
 			num = str.indexOf("/");
 			if (num != -1) {
-				return str.substring(num + 1);
+				return AppTools.getAppPath() + "/downLoad/" + str.substring(num + 1);
 			}else {
 				return "";
 			}
 		}
+		
+		
+		
 		
 	}
 

@@ -109,6 +109,9 @@
 			curfile = FileTools.getFileFromPath(FileTools.getPathFromURL(curURL));
 			tempfile = FileTools.getFileFromPath(FileTools.getPathFromURL(curURL) + ".ucvcbbs");
 			
+			//trace("-------------:" + FileTools.getPathFromURL(curURL));
+			//trace(tempfile,tempfile.exists)
+			
 			if (curfile.exists) {
 				trace("文件已经有了。。");
 				//删除记录
