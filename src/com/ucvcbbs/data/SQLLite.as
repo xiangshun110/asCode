@@ -215,6 +215,64 @@ package com.ucvcbbs.data
 			return (statement.getResult().data as Array);
 		}
 		
+		/**
+		 * 用where in查询
+		 * @param	tbnameStr 表名
+		 * @param	wordAry	要查询的字段数组，默认为将为*
+		 * @param	ofDateObj	条件对象{aa:"1,3,5"}
+		 * @return
+		 */
+		public function selectData_IN(tbnameStr:String, wordAry:Array=null,ofDateObj:Object = null):Array {
+			if (!wordAry) {
+				wordAry = new Array("*");
+			}
+			var sql:String;
+			var s1:String = "SELECT ";
+			if (wordAry[0] == "*"||wordAry[0] == null) {
+				s1 += "* FROM "+tbnameStr;
+			}else {
+				for each(var obj1:String in wordAry) {
+					s1 += obj1 + ",";
+				}
+				s1=s1.substr(0,s1.length-1);
+				s1 += " FROM "+tbnameStr;
+			}
+			if (ofDateObj) {
+				var s2:String = " WHERE ";
+				for (var obj2:String in ofDateObj) {
+					s2 += (obj2 + " IN (");
+					s2 += (ofDateObj[obj2] + ")");
+					break;
+					/*if (ofDateObj[obj2] is Number) {
+						s2 += obj2 + "=" + ofDateObj[obj2]+" "+oa;
+					}else {
+						s2 += obj2 + "='" + ofDateObj[obj2]+"' "+oa;
+					}*/
+				}
+				//s2 = s2.substr(0, (s2.length - (oa.length+1)));
+				sql = s1 + s2;
+			}else {
+				sql = s1;
+			}
+			excuteSQL(sql);
+			//trace("statement.getResult().data:"+statement.getResult().data);
+			return (statement.getResult().data as Array);
+		}
+		
+		/**
+		 * 去重复查询，如果有条件，使用or链接
+		 * @param	tbnameStr  表名
+		 * @param	keyword  要查询的字段
+		 * @return  返回一个数组，以object为元素，每个object装一行的信息
+		 */
+		public function distinctSelectData(tbnameStr:String, keyword:String):Array {
+			var s1:String = "SELECT DISTINCT ";
+			s1 += keyword + " FROM " + tbnameStr;
+			excuteSQL(s1);
+			//trace("statement.getResult().data:"+statement.getResult().data);
+			return (statement.getResult().data as Array);
+		}
+		
 		
 		/**
 		 * 增加，修改，删除列

@@ -1,9 +1,11 @@
 ﻿package com.ucvcbbs.downLoad 
 {
+	import cn.eDoctor.Baraclude.events.AppEvent;
 	import com.ucvcbbs.data.SQLLite;
 	import com.ucvcbbs.utils.AppTools;
 	import com.ucvcbbs.utils.FileTools;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.filesystem.File;
@@ -18,7 +20,7 @@
 	 * 只适用于air版
 	 * @author xiangshun
 	 */
-	public class BreakPointDownLoad 
+	public class BreakPointDownLoad extends EventDispatcher
 	{
 		private var laoddb:SQLLite;
 		
@@ -91,7 +93,7 @@
 			totalPoint = e.bytesTotal;
 			lod.close();
 			lod = null;
-			trace(curURL+" totalPoint:" + totalPoint);
+			trace(curURL+" , totalPoint:" + totalPoint);
 			startDownLoad();
 		}
 		
@@ -169,7 +171,8 @@
 			lod = null;
 			
 			if (endPoint == totalPoint) {
-				trace(curfile.url+"下载完成");
+				endPoint = 0;
+				trace(curfile.url+" 下载完成");
 				tempfile.moveTo(curfile, true);
 				//删除数据库中这条记录
 				laoddb.deleteData("unfinished", { url:curURL } );
@@ -181,6 +184,10 @@
 			breakDownLoad();
 		}
 		
+		/**
+		 * 这是一个区间的下载进度
+		 * @param	evt
+		 */
 		private function progressHandler(evt:ProgressEvent):void {
 			//trace(evt.bytesLoaded, evt.bytesTotal);
 			_curProgress = evt.bytesLoaded / evt.bytesTotal;
@@ -197,8 +204,10 @@
 				//继续开始下载
 				loadURLTobreakPoint(curURL);
 			}else {
-				//已经没有了
+				//已经没有了,所以文件都已经完成
+				trace("所有文件下载完毕");
 				isStart = false;
+				dispatchEvent(new AppEvent(AppEvent.ALLFILELOADCOMPLETE));
 			}
 		}
 		
@@ -219,10 +228,17 @@
 		}
 		
 		/**
+		 * 当前这个文件的URL
+		 */
+		public function  get curLoadURL():String {
+			return curURL;
+		}
+		
+		/**
 		 * 当前这个文件的下载进度
 		 */
 		public function get curProgress():Number {
-			return _curProgress;
+			return endPoint/totalPoint;
 		}
 		
 		/**

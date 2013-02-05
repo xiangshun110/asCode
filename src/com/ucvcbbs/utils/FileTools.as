@@ -29,13 +29,13 @@
 		 */
 		public static function deleteFromPath(path:String):void {
 			var f:File = getFileFromPath(path);
-			if(f){
+			if(f.exists){
 				f.deleteFile();
 			}
 		}
 		
 		/**
-		 * 根据URL获取文件的路径(包括文件名),比如
+		 * 根据URL获取文件的路径(包括文件名),(downLoad专用)
 		 * @param	url
 		 * @return
 		 */
@@ -44,21 +44,63 @@
 			var str:String;
 			if (num != -1) {
 				str =  url.substring(7);
-				
 			}else {
 				return "";
 			}
 			
 			num = str.indexOf("/");
 			if (num != -1) {
-				return AppTools.getAppPath() + "/downLoad/" + str.substring(num + 1);
+				var pstr:String="";
+				switch(AppTools.getSystemName()) {
+					case SystemName.WINDOWS:
+						pstr = AppTools.getAppPath();
+						break;
+					case SystemName.IOS:
+						pstr = AppTools.getAppPath();
+						pstr = AppTools.getParentURL(pstr);
+						pstr += "/Library";
+						break;
+				}
+				return pstr + "/downLoad/" + str.substring(num + 1);
 			}else {
 				return "";
 			}
 		}
 		
+		/**
+		 * 获取http://后第一个斜杠后的内容
+		 * @param	url
+		 * @return
+		 */
+		public static function getPathFormURL2(url:String):String {
+			var num:int = url.indexOf("http://");
+			var str:String;
+			if (num != -1) {
+				str =  url.substring(7);
+			}else {
+				return "";
+			}
+			
+			num = str.indexOf("/");
+			if (num != -1) {
+				return str.substring(num + 1);
+			}else {
+				return "";
+			}
+		}
 		
-		
+		/**
+		 * 同步删除文件夹
+		 * @param	path
+		 */
+		public static function deleteDirctoryFromPath(path:String):void {
+			var f:File = FileTools.getFileFromPath(path);
+			if(f.exists){
+				f.deleteDirectory(true);
+			}else {
+				trace("删除文件夹失败: " + path);
+			}
+		}
 		
 	}
 

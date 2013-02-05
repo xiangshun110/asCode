@@ -85,6 +85,8 @@
 		private var tweenCurrentCount:Number = 0;
 		private var tweenTotalCount:Number = 0;
 		
+		private var bgAlpha:Number;
+		
 		/**
 		 * MHScrollBar 移动版 竖向滚动条
 		 * view			滚动的对象
@@ -98,7 +100,7 @@
 									view:DisplayObjectContainer,
 									backgroundColor:Number = 0xffffff,
 									scrollIndicatorTopPadding:Number=0,
-									scrollIndicatorBottomPadding:Number=0)
+									scrollIndicatorBottomPadding:Number=0,bgAlpha:Number=0)
 		{
 			if (view && view.name != MWHIOSScrollBar.SCROLLBARNAME) {
 				viewContainer.addChild(view);
@@ -114,6 +116,7 @@
 				addChild(scrollIndicator);
 				scrollIndicatorVisible = false;
 			}
+			this.bgAlpha = bgAlpha;
 			//
 			this.backgroundColor = backgroundColor;
 			this.scrollIndicatorTopPadding = scrollIndicatorTopPadding;
@@ -169,7 +172,7 @@
 			if (!MWHScrollBarBOOL)
 			{
 				graphics.clear();
-				graphics.beginFill(backgroundColor,0);
+				graphics.beginFill(backgroundColor,bgAlpha);
 				graphics.drawRect(0, 0, width, height);
 			}
 			//this.opaqueBackground = backgroundColor;
@@ -445,6 +448,11 @@
 		public function get MaxScrollHeight():Number
 		{
 			return maxScroll;
+		}
+		
+		public function removeMove():void {
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, detectDirection_mouseMoveHandler_Y);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, drag_mouseUpHandler_Y);
 		}
 		
 		///////////////////

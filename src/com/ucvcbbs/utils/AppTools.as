@@ -97,6 +97,44 @@ package com.ucvcbbs.utils
 			return url.substring(0, n);
 		}
 		
+		/**
+		 * 获取IOS上的library路径
+		 * @return
+		 */
+		public static function getIOSLibraryPath():String {
+			var pstr:String;
+			switch(AppTools.getSystemName()) {
+				case SystemName.WINDOWS:
+					pstr = AppTools.getAppPath();
+					break;
+				case SystemName.IOS:
+					pstr = AppTools.getAppPath();
+					pstr = AppTools.getParentURL(pstr);
+					pstr += "/Library";
+					break;
+			}
+			return pstr;
+		}
+		
+		/**
+		 * 获取IOS上的Documents路径
+		 * @return
+		 */
+		public static function getIOSDocumentsPath():String {
+			var pstr:String;
+			switch(AppTools.getSystemName()) {
+				case SystemName.WINDOWS:
+					pstr = AppTools.getAppPath();
+					break;
+				case SystemName.IOS:
+					pstr = AppTools.getAppPath();
+					pstr = AppTools.getParentURL(pstr);
+					pstr += "/Documents";
+					break;
+			}
+			return pstr;
+		}
+		
 		
 		//GPS
 	}
