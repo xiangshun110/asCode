@@ -200,9 +200,9 @@ package com.ucvcbbs.data
 				var s2:String = " WHERE ";
 				for (var obj2:String in ofDateObj) {
 					if (ofDateObj[obj2] is Number) {
-						s2 += obj2 + "=" + ofDateObj[obj2]+" "+oa;
+						s2 += obj2 + "=" + ofDateObj[obj2]+" "+oa+" ";
 					}else {
-						s2 += obj2 + "='" + ofDateObj[obj2]+"' "+oa;
+						s2 += obj2 + "='" + ofDateObj[obj2]+"' "+oa+" ";
 					}
 				}
 				s2 = s2.substr(0, (s2.length - (oa.length+1)));
@@ -287,16 +287,18 @@ package com.ucvcbbs.data
 		 * @param	tbnameStr 表名
 		 * @param	dataObj  字段名跟字段类型对象 例{test:"TEXT"}
 		 */
-		public function addColumn(tbnameStr:String, dataObj:Object):Array{
-			var sql:String = "ALTER TABLE " + tbnameStr + " ADD ";
+		public function addColumn(tbnameStr:String, dataObj:Object):Array {
 			var s1:String="";
 			for (var obj:String in  dataObj) {
 				s1 += (obj + " " + dataObj[obj]);
 			}
+			var sql:String =" ALTER TABLE " + tbnameStr + " ADD ";
 			sql += s1;
 			excuteSQL(sql);
 			return (statement.getResult().data as Array);
 		}
+		
+		
 		
 		
 		/**
