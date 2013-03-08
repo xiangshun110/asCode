@@ -103,6 +103,17 @@
 			return str;
 		}
 		
+		/**
+		 * 替换所有需要替换的字符串
+		 * @param	strSource 需要查找替换的字符串
+		 * @param	strReplaceFrom 查找的字符串
+		 * @param	strRepalceTo 替换成某字符串
+		 * @return
+		 */
+		public static function replaceAllByRegex(strSource:String, strReplaceFrom:String, strRepalceTo:String):String {
+			return strSource == null ? null : strSource.replace(new RegExp(strReplaceFrom, 'g'), strRepalceTo);
+		}
+		
 	}
 
 }
