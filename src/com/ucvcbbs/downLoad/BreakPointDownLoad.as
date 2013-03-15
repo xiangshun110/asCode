@@ -1,6 +1,6 @@
 ﻿package com.ucvcbbs.downLoad 
 {
-	import cn.eDoctor.Baraclude.events.AppEvent;
+	//import cn.eDoctor.Baraclude.events.AppEvent;
 	import com.ucvcbbs.data.SQLLite;
 	import com.ucvcbbs.utils.AppTools;
 	import com.ucvcbbs.utils.FileTools;
@@ -207,7 +207,7 @@
 				//已经没有了,所以文件都已经完成
 				trace("所有文件下载完毕");
 				isStart = false;
-				dispatchEvent(new AppEvent(AppEvent.ALLFILELOADCOMPLETE));
+				dispatchEvent(new Event("allFileLoadComplete"));//allFileLoadComplete
 			}
 		}
 		

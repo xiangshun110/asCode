@@ -306,6 +306,7 @@ package com.ucvcbbs.data
 		 * @param	sqlStr  要执行的SQL语句
 		 */
 		public function excuteSQL(sqlStr:String):void {
+			//trace("sqlStr:" + sqlStr);
 			conn.open(dbFile);
 			statement.text = sqlStr;
 			statement.addEventListener(SQLEvent.RESULT,resultHandler);

@@ -1,7 +1,8 @@
 package com.ucvcbbs.utils 
 {
-	import flash.filesystem.File;
+	//import flash.filesystem.File;
 	import flash.system.Capabilities;
+	import flash.utils.getDefinitionByName;
 	/**
 	 * ...
 	 * @author xiangshun
@@ -19,7 +20,8 @@ package com.ucvcbbs.utils
 		 * @return
 		 */
 		public static function getAppPath():String {
-			return File.applicationDirectory.nativePath;	
+			var FileClass:Class = getDefinitionByName("flash.filesystem.File") as Class;
+			return FileClass.applicationDirectory.nativePath;	
 		}
 		
 		/**
@@ -27,7 +29,8 @@ package com.ucvcbbs.utils
 		 * @return
 		 */
 		public static function getAppURL():String {
-			return File.applicationDirectory.url;
+			var FileClass:Class = getDefinitionByName("flash.filesystem.File") as Class;
+			return FileClass.applicationDirectory.url;
 		}
 		
 		/**
@@ -35,7 +38,8 @@ package com.ucvcbbs.utils
 		 * @return
 		 */
 		public static function getDesktopPath():String {
-			return File.desktopDirectory.nativePath;
+			var FileClass:Class = getDefinitionByName("flash.filesystem.File") as Class;
+			return FileClass.desktopDirectory.nativePath;
 		}
 		
 		/**
@@ -43,7 +47,8 @@ package com.ucvcbbs.utils
 		 * @return
 		 */
 		public static function getDocmentPath():String {
-			return File.documentsDirectory.nativePath;
+			var FileClass:Class = getDefinitionByName("flash.filesystem.File") as Class;
+			return FileClass.documentsDirectory.nativePath;
 		}
 		
 		/**
@@ -51,7 +56,8 @@ package com.ucvcbbs.utils
 		 * @return
 		 */
 		public static function getStoragePath():String {
-			return File.applicationStorageDirectory.nativePath;
+			var FileClass:Class = getDefinitionByName("flash.filesystem.File") as Class;
+			return FileClass.applicationStorageDirectory.nativePath;
 		}
 		
 		/**
