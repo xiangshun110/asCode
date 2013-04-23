@@ -60,6 +60,9 @@
 						pstr = AppTools.getParentURL(pstr);
 						pstr += "/Library";
 						break;
+					case SystemName.LINUX:
+						pstr = AppTools.getStoragePath();
+						break;
 				}
 				return pstr + "/downLoad/" + str.substring(num + 1);
 			}else {
