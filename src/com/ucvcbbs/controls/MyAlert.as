@@ -9,6 +9,7 @@ package com.ucvcbbs.controls
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.events.StageOrientationEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.Matrix;
 	import flash.system.Capabilities;
 	import flash.text.TextField;
@@ -72,6 +73,7 @@ package com.ucvcbbs.controls
 			//trace(stage.stageWidth, stage.stageHeight, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
 			sp.graphics.drawRect(-stage.stageWidth/2, -stage.stageHeight/2,stage.stageWidth, stage.stageHeight);
 			sp.graphics.endFill();
+			
 			sp.x = stage.stageWidth / 2;
 			sp.y = stage.stageHeight / 2;
 			return sp;
@@ -79,15 +81,27 @@ package com.ucvcbbs.controls
 		
 		private static function updateCenterBg():void {
 			centerBg.graphics.clear();
-			centerBg.graphics.beginFill(0x296693);
+			centerBg.graphics.lineStyle(3, 0xF8FCFB);
+			centerBg.graphics.beginFill(0x2E3D66,.8);
 			centerBg.graphics.drawRoundRect(0, 0, contentTf.width + 100, contentTf.height + 100, 10, 10);
 			centerBg.graphics.endFill();
 			
+			centerBg.graphics.lineStyle();
+			centerBg.graphics.beginFill(0xA4B3D4, .5);
+			centerBg.graphics.moveTo(2, 2);
+			centerBg.graphics.lineTo(2, 20);
+			centerBg.graphics.curveTo(centerBg.width / 2-2, 45, centerBg.width-4, 20);
+			centerBg.graphics.lineTo(centerBg.width-4, 2);
+			centerBg.graphics.endFill();
+			
 			contentTf.x = (centerBg.width - contentTf.width) / 2;
-			contentTf.y = (centerBg.height - contentTf.height) / 2-15;
+			contentTf.y = (centerBg.height - contentTf.height) / 2-8;
 			
 			centerBg.x = (container.width - centerBg.width) / 2;
 			centerBg.y = (container.height - centerBg.height) / 2;
+			
+			titleTf.x = (centerBg.width - titleTf.width) / 2;
+			titleTf.y = 13;
 		}
 		
 		
@@ -175,8 +189,14 @@ package com.ucvcbbs.controls
 				centerBg.addChild(titleTf);
 				centerBg.addChild(contentTf);
 				
-				container.addChild(centerBg);
+				var dsFilter:DropShadowFilter = new DropShadowFilter();
+				dsFilter.alpha = .4;
+				dsFilter.angle = 90;
+				//dsFilter.blurY = 6;
+				//dsFilter.distance = 6;
 				
+				centerBg.filters = [dsFilter];
+				container.addChild(centerBg);
 			}
 			updateCenterBg();
 			
@@ -190,8 +210,8 @@ package com.ucvcbbs.controls
 				centerBg.addChild(btn1);
 			}
 			btn1.setTxt(btnName1);
-			btn1.setBgWidth(centerBg.width - 16);
-			btn1.x = (centerBg.width - btn1.width) / 2;
+			btn1.setBgWidth(centerBg.width - 20);
+			btn1.x = (centerBg.width - btn1.width) / 2-1.5;
 			btn1.y = centerBg.height - btn1.height - 10;
 			
 			if (!btn2) {
@@ -205,12 +225,12 @@ package com.ucvcbbs.controls
 			if (btnName2 != "") {
 				btn2.visible = true;
 				btn2.setTxt(btnName2);
-				btn2.setBgWidth((centerBg.width - 16) / 2);
+				btn2.setBgWidth((centerBg.width - 20) / 2);
 				btn2.y = centerBg.height - btn2.height - 10;
-				btn1.setBgWidth((centerBg.width - 16) / 2);
+				btn1.setBgWidth((centerBg.width - 20) / 2);
 				
-				btn1.x = (centerBg.width - btn1.width * 2 - 5) / 2;
-				btn2.x = btn1.x + btn1.width + 5;
+				btn1.x = (centerBg.width - btn1.width * 2 - 4) / 2-1.5;
+				btn2.x = btn1.x + btn1.width + 4;
 			}
 			
 			stage.addChild(container);

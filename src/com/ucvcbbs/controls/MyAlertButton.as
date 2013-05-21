@@ -5,6 +5,7 @@ package com.ucvcbbs.controls
 	import flash.geom.ColorTransform;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	/**
 	 * ...
 	 * @author xiangshun
@@ -13,6 +14,7 @@ package com.ucvcbbs.controls
 	{
 		private var bg:Sprite;
 		private var txt:TextField;
+		private var format:TextFormat;
 		public function MyAlertButton() 
 		{
 			init();
@@ -27,9 +29,14 @@ package com.ucvcbbs.controls
 			txt.maxChars = 5;
 			txt.autoSize = TextFieldAutoSize.CENTER;
 			
+			format = new TextFormat();
+			format.bold = true;
+			format.size = 14;
+			
+			
 			bg.graphics.clear();
 			bg.graphics.beginFill(0x94BAD7, .5);
-			bg.graphics.drawRoundRect(0, 0, 100, 35, 8, 8);
+			bg.graphics.drawRoundRect(0, 0, 100, 40, 8, 8);
 			bg.graphics.endFill();
 			addChild(bg);
 			addChild(txt);
@@ -75,6 +82,7 @@ package com.ucvcbbs.controls
 		 */
 		public function setTxt(str:String):void {
 			txt.text = str;
+			txt.setTextFormat(format);
 			txt.x = (bg.width - txt.width) / 2;
 			txt.y = (bg.height - txt.height) / 2;
 		}
@@ -86,7 +94,7 @@ package com.ucvcbbs.controls
 		public function setBgWidth(bgwidth:Number):void {
 			bg.graphics.clear();
 			bg.graphics.beginFill(0x94BAD7, .5);
-			bg.graphics.drawRoundRect(0, 0, bgwidth, 35, 8, 8);
+			bg.graphics.drawRoundRect(0, 0, bgwidth, 40, 8, 8);
 			bg.graphics.endFill();
 			txt.x = (bg.width - txt.width) / 2;
 			txt.y = (bg.height - txt.height) / 2;
