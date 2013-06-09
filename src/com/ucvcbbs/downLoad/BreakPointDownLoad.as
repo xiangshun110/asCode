@@ -2,6 +2,7 @@
 {
 	//import cn.eDoctor.Baraclude.events.AppEvent;
 	import com.ucvcbbs.data.SQLLite;
+	import com.ucvcbbs.events.BreakPointDownLoadEvent;
 	import com.ucvcbbs.utils.AppTools;
 	import com.ucvcbbs.utils.FileTools;
 	import flash.events.Event;
@@ -41,7 +42,7 @@
 		private var _curFileName:String;
 		
 		private var _totalCount:int=0;
-		private var _curCount:int=0;
+		private var _curCount:int = 0;
 		
 		public function BreakPointDownLoad() 
 		{
@@ -172,7 +173,8 @@
 			
 			if (endPoint == totalPoint) {
 				endPoint = 0;
-				trace(curfile.url+" 下载完成");
+				trace(curfile.url + " 下载完成");
+				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ONEITEMCOMPLETE,false,false,curURL,curfile.url));
 				tempfile.moveTo(curfile, true);
 				//删除数据库中这条记录
 				laoddb.deleteData("unfinished", { url:curURL } );
@@ -207,7 +209,7 @@
 				//已经没有了,所以文件都已经完成
 				trace("所有文件下载完毕");
 				isStart = false;
-				dispatchEvent(new Event("allFileLoadComplete"));//allFileLoadComplete
+				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ALLCOMPLETE));//allFileLoadComplete
 			}
 		}
 		

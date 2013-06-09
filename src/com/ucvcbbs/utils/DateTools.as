@@ -1,6 +1,7 @@
 ﻿package  com.ucvcbbs.utils
 {
 	/**
+	 * 时间工具
 	 * ...
 	 * @author xiangshun
 	 */
@@ -29,7 +30,7 @@
 			var d:Date = new Date();
 			var str:String;
 			str = d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate();
-			str += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+			str += "--" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
 			return str;
 		}
 		
