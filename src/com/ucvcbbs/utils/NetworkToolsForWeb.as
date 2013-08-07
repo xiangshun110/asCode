@@ -1,5 +1,6 @@
 package com.ucvcbbs.utils 
 {
+	import flash.display.Stage;
 	/**
 	 * ...
 	 * @author xiangshun
