@@ -114,6 +114,126 @@
 			return strSource == null ? null : strSource.replace(new RegExp(strReplaceFrom, 'g'), strRepalceTo);
 		}
 		
+		
+		
+		/**
+		 * 模糊查询
+		 * @param	info 要查的字符串 
+		 * @param	source 数据源
+		 * @return
+		 */
+		public static function fuzzySearch(info:String, source:Vector.<String>):Vector.<String> {
+			return getSearchResult(info,source);
+		}
+		/** 搜索并返回结果数组 */
+		private static function getSearchResult(info:String,source:Vector.<String>):Vector.<String>
+		{
+			var list:Vector.<String> = new Vector.<String>();
+			if (info == "") return list;
+			
+			var isSame:Boolean = false;
+			var mInfo:String = "";
+			var sInfo:String = null;
+			var amount:int = source.length;
+			
+			for (var i:int = 0; i < amount; i++) 
+			{
+				mInfo = source[i];
+				if (mInfo == info)
+				{
+					//完全相同
+					list.push(info);
+				}
+				else
+				{
+					//不相等，找相近
+					if (hasRelation(mInfo, info))
+					{
+						sInfo = getRelationData(mInfo, info);
+						if (sInfo != "") list.push(sInfo);
+					}
+				}
+			}
+			
+			list.sort(sortByLength);
+			
+			return list;
+		}
+		/** 按长度排列顺序 */
+		private static function sortByLength(data1:String, data2:String):int
+		{
+			if (data1.length < data2.length)
+			{
+				return -1
+			}
+			else if (data1.length > data2.length)
+			{
+				return 1;
+			}
+			else 
+			{
+				return 0;
+			}
+        }
+		/** 两个字符串是否有相同字符 */
+		private static function hasRelation(resInfo:String, searchInfo:String):Boolean
+		{
+			if (resInfo.indexOf(searchInfo) >= 0) return true;
+			var len0:int = resInfo.length;
+			var info0:String;
+			
+			var len1:int = searchInfo.length;
+			var j:int = 0;
+			
+			for (var i:int = 0; i < len0; i++) 
+			{
+				info0 = resInfo.charAt(i);
+				for (j = 0; j < len1; j++) 
+				{
+					if (info0 == searchInfo.charAt(j)) return true;
+				}
+			}
+			
+			return false;
+		}
+		/** 得到两个字符串匹配结果的类型数据 */
+		private static function getRelationData(resInfo:String, searchInfo:String):String
+		{
+			//被包含
+			var index:int = resInfo.indexOf(searchInfo);
+			if (index >= 0) return resInfo;
+			
+			//不包含
+			var len0:int = resInfo.length;
+			var info0:String;
+			
+			var len1:int = searchInfo.length;
+			var j:int = 0;
+			
+			var sameAmount:int = 0;
+			
+			for (var i:int = 0; i < len0; i++) 
+			{
+				info0 = resInfo.charAt(i);
+				
+				for (j = 0; j < len1; j++) 
+				{
+					if (info0 == searchInfo.charAt(j)) 
+					{
+						sameAmount++;
+						break;
+					}
+				}
+			}
+			
+			if (sameAmount >= len1) 
+			{
+				return resInfo;
+			}
+			
+			return "";
+		}
+		
 	}
 
 }
