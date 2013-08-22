@@ -1,6 +1,7 @@
 package com.ucvcbbs.data
 {
 	import com.ucvcbbs.utils.AppTools;
+	import com.ucvcbbs.utils.StringTools;
 	import com.ucvcbbs.utils.SystemName;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
@@ -108,6 +109,7 @@ package com.ucvcbbs.data
 			var sqlStr2:String = "VALUES(";
 			for (var obj:String in dataObj) {
 				sqlStr += (obj + ",");
+				dataObj[obj] = StringTools.replaceAllByRegex(dataObj[obj], "'", "‘");
 				sqlStr2 += ("'"+dataObj[obj] + "',");
 			}
 			sqlStr=sqlStr.substring(0, sqlStr.length - 1);
@@ -130,6 +132,7 @@ package com.ucvcbbs.data
 			var s1:String = "UPDATE "+tbnameStr+" SET ";
 			var s2:String = "WHERE ";
 			for (var obj:String in dataObj) {
+				dataObj[obj] = StringTools.replaceAllByRegex(dataObj[obj], "'", "‘");
 				s1 += obj + "='"+dataObj[obj] + "',";
 			}
 			s1 = s1.substring(0, s1.length - 1);
@@ -298,7 +301,78 @@ package com.ucvcbbs.data
 			return (statement.getResult().data as Array);
 		}
 		
+		/**
+		 * 查询（前asc/后desc）N条数据，
+		 * @param	tbnameStr  表名
+		 * @param	count 数量
+		 * @param	key 根据什么排序
+		 * @param	wordAry 要查询的字段数组
+		 * @param	oa  条件链接是用OR还是AND，默认是OR
+		 * @param	order  升序ASC还是降序DESC
+		 * @return
+		 */
+		public function selectTopData(tbnameStr:String, count:int = 20,key:String="id", wordAry:Array = null,oa:String="OR", ofDateObj:Object = null, order:String = "DESC"):Array {
+			if (!wordAry) {
+				wordAry = new Array("*");
+			}
+			var sql:String;
+			var s1:String = "SELECT ";
+			if (wordAry[0] == "*"||wordAry[0] == null) {
+				s1 += "* FROM "+tbnameStr;
+			}else {
+				for each(var obj1:String in wordAry) {
+					s1 += obj1 + ",";
+				}
+				s1=s1.substr(0,s1.length-1);
+				s1 += " FROM "+tbnameStr;
+			}
+			if (ofDateObj) {
+				var s2:String = " WHERE ";
+				for (var obj2:String in ofDateObj) {
+					if (ofDateObj[obj2] is Number) {
+						s2 += obj2 + "=" + ofDateObj[obj2]+" "+oa+" ";
+					}else {
+						s2 += obj2 + "='" + ofDateObj[obj2]+"' "+oa+" ";
+					}
+				}
+				s2 = s2.substr(0, (s2.length - (oa.length+1)));
+				sql = s1 + s2;
+			}else {
+				sql = s1;
+			}
+			sql += " ORDER BY " + key +" " + order+" LIMIT "+count;
+			//trace(sql);
+			excuteSQL(sql);
+			return (statement.getResult().data as Array);
+		}
 		
+		/**
+		 * 查询总的记录数
+		 * @param	tbnameStr
+		 * @return
+		 */
+		public function getTotalCount(tbnameStr:String):int {
+			var sql:String = "select count(*) from " + tbnameStr;
+			excuteSQL(sql);
+			var ary:Array = (statement.getResult().data as Array);
+			if (ary && ary.length) {
+				return ary[0]["count(*)"];
+			}
+			return 0;
+		}
+		
+		/**
+		 * 从startIndex开始返回len条数据
+		 * @param	tbnameStr
+		 * @param	startIndex
+		 * @param	len
+		 * @return
+		 */
+		public function selectForLimit(tbnameStr:String, startIndex:int, len:int):Array {
+			var sql:String = "select * from " + tbnameStr + " limit " + (startIndex - 1) + "," + len;
+			excuteSQL(sql);
+			return (statement.getResult().data as Array);
+		}
 		
 		
 		/**

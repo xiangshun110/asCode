@@ -90,7 +90,7 @@
 			var ary2:Array = [];
 			ary = ary.reverse();
 			
-			for (var i = 0; i < ary.length; i++ ) {
+			for (var i:int = 0; i < ary.length; i++ ) {
 				if (i != 0 && (i % 3) == 0) {
 					ary2.push(",");
 				}

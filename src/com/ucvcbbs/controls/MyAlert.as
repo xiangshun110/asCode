@@ -41,6 +41,8 @@ package com.ucvcbbs.controls
 		
 		private static var _eventObject:EventDispatcher
 		
+		private static var _useStageWidth:Boolean;
+		
 		public function MyAlert() 
 		{
 			
@@ -71,11 +73,19 @@ package com.ucvcbbs.controls
 			sp.graphics.clear();
 			sp.graphics.beginGradientFill(GradientType.RADIAL, [0xECF0F3, 0x647A8A], [.6, .8], [0, 255],mat);
 			//trace(stage.stageWidth, stage.stageHeight, Capabilities.screenResolutionX, Capabilities.screenResolutionY);
-			sp.graphics.drawRect(-stage.stageWidth/2, -stage.stageHeight/2,stage.stageWidth, stage.stageHeight);
+			if(_useStageWidth){
+				sp.graphics.drawRect( -stage.stageWidth / 2, -stage.stageHeight / 2, stage.stageWidth, stage.stageHeight);
+			}else {
+				sp.graphics.drawRect( -stage.width / 2, -stage.height / 2, stage.width, stage.height);
+			}
 			sp.graphics.endFill();
-			
-			sp.x = stage.stageWidth / 2;
-			sp.y = stage.stageHeight / 2;
+			if(_useStageWidth){
+				sp.x = stage.stageWidth / 2;
+				sp.y = stage.stageHeight / 2;
+			}else {
+				sp.x = stage.width / 2;
+				sp.y = stage.height / 2;
+			}
 			return sp;
 		}
 		
@@ -112,11 +122,21 @@ package com.ucvcbbs.controls
 				mat.tx = 10;
 				mat.ty = 10;
 				bg.graphics.clear();
-				bg.graphics.beginGradientFill(GradientType.RADIAL, [0xECF0F3, 0x647A8A], [.6, .8], [0, 255],mat);
-				bg.graphics.drawRect(-stage.stageWidth/2, -stage.stageHeight/2,stage.stageWidth, stage.stageHeight);
+				bg.graphics.beginGradientFill(GradientType.RADIAL, [0xECF0F3, 0x647A8A], [.6, .8], [0, 255], mat);
+				if(_useStageWidth){
+					bg.graphics.drawRect( -stage.stageWidth / 2, -stage.stageHeight / 2, stage.stageWidth, stage.stageHeight);
+				}else {
+					bg.graphics.drawRect( -stage.width / 2, -stage.height / 2, stage.width, stage.height);
+				}
 				bg.graphics.endFill();
-				bg.x = stage.stageWidth / 2;
-				bg.y = stage.stageHeight / 2;
+				
+				if(_useStageWidth){
+					bg.x = stage.stageWidth / 2;
+					bg.y = stage.stageHeight / 2;
+				}else {
+					bg.x = stage.width / 2;
+					bg.y = stage.height / 2;
+				}
 				
 				centerBg.x = (container.width - centerBg.width) / 2;
 				centerBg.y = (container.height - centerBg.height) / 2;
@@ -138,10 +158,20 @@ package com.ucvcbbs.controls
 			}
 		}
 		
-		public static function show(stage1:Stage,title:String, content:String, btnName1:String="确定", btnName2:String = ""):void {
+		/**
+		 * 最多只能有两个按钮
+		 * @param	stage1  stage对象
+		 * @param	title  标题
+		 * @param	content  内容
+		 * @param	btnName1  按钮1的名字
+		 * @param	btnName2  按钮2的名字
+		 * @param	useStageWidth  是否使用stageWidth,否则使用stage.width
+		 */
+		public static function show(stage1:Stage,title:String, content:String, btnName1:String="确定", btnName2:String = "",useStageWidth:Boolean=true):void {
 			stage = stage1;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
+			_useStageWidth=useStageWidth
+			//stage.align = StageAlign.TOP_LEFT;
+			//stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationHandler);
 			if (!container) {
 				container = new Sprite();

@@ -34,6 +34,18 @@
 			return str;
 		}
 		
+		/**
+		 * 字符串返回年月日时分秒全部用“-”间隔
+		 * @return
+		 */
+		static public function getCurTime2():String {
+			var d:Date = new Date();
+			var str:String;
+			str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+			str += "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+			return str;
+		}
+		
 	}
 
 }
