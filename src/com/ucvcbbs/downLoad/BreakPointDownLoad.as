@@ -18,7 +18,7 @@
 	import flash.net.URLRequestHeader;
 	import flash.utils.ByteArray;
 	/**
-	 * 只适用于air版
+	 * 只适用于air版，一次只能下载一个
 	 * @author xiangshun
 	 */
 	public class BreakPointDownLoad extends EventDispatcher
@@ -139,7 +139,8 @@
 		 */
 		private function breakDownLoad():void {
 			if (startPoint >= totalPoint) {
-				trace(curfile.url+"下载完成");
+				trace(curfile.url + "下载完成");
+				continueDown();
 				return;
 			}
 			endPoint += 10000;
@@ -171,7 +172,7 @@
 			lod.removeEventListener(Event.COMPLETE, breakLoadComplete);
 			lod = null;
 			
-			if (endPoint == totalPoint) {
+			if (endPoint >= totalPoint) {
 				endPoint = 0;
 				trace(curfile.url + " 下载完成");
 				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ONEITEMCOMPLETE,false,false,curURL,curfile.url));
