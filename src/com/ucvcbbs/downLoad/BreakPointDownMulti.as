@@ -278,16 +278,8 @@ package com.ucvcbbs.downLoad
 			
 			db.update(TB_UNFINISH, { autoLoad:"false",isLoading:"false"}, { url:loadmodel.url } );
 			
-			delete urlDict[loadmodel.url];
-			delete loadDict[loadmodel.load];
-			loadmodel.load = null;
-			loadmodel.request = null;
-			loadmodel.tempFile = null;
-			loadmodel.curFile = null;
-			loadmodel = null;
-			//trace("curCount======:" + curCount);
-			curCount--;
-			//trace("curCount------:" + curCount);
+			deleteLoadModel(loadmodel);
+			
 			continueDown();//下一个
 		}
 		
