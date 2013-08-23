@@ -41,15 +41,18 @@ package com.ucvcbbs.downLoad
 			var obj:Object = new Object();
 			obj.url = "TEXT";
 			obj.autoLoad = "TEXT";//false:不自动下载，true:进入下载队列
+			obj.isLoading = "TEXT";//是否下载中,false:没有  true:在
 			db.creatTable(TB_UNFINISH, obj);
 			
 			urlDict = new Dictionary();//key是URL，value是loadModel
 			loadDict = new Dictionary();//key是load，value是load的url
 			
 			//检查没下载完的
-			var ary:Array = db.selectData(TB_UNFINISH, null, { autoLoad:"true" } );
+			var ary:Array = db.selectData(TB_UNFINISH, null, { autoLoad:"true",isLoading:"true" },"AND" );
 			if (ary && ary.length) {
-				
+				for (var i:int = 0; i < ary.length; i++ ) {
+					addDownload(ary[i].url, true);
+				}
 			}
 		}
 		
@@ -70,7 +73,7 @@ package com.ucvcbbs.downLoad
 			var m:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			m.total = e.bytesTotal;
 			e.target.close();
-			trace(m.request.url+" , totalPoint:" + totalPoint);
+			//trace(m.request.url+" , totalPoint:" + m.total);
 			startDownLoad(m);
 		}
 		
@@ -89,16 +92,19 @@ package com.ucvcbbs.downLoad
 			loadmodel.tempFile = FileTools.getFileFromPath(FileTools.getPathFromURL(tempurl) + ".ucvcbbs");
 			
 			//trace("-------------:" + FileTools.getPathFromURL(tempurl));
-			//trace(tempfile,tempfile.exists)
+			//trace(loadmodel.url,loadmodel.tempFile,loadmodel.tempFile.exists)
 			
 			if (loadmodel.curFile.exists) {
 				trace("文件已经有了。。");
 				//删除记录
-				laoddb.deleteData(TB_UNFINISH, { url:tempurl } );
+				db.deleteData(TB_UNFINISH, { url:tempurl } );
+				//删掉urlDic,loadDict对应的key
+				deleteLoadModel(loadmodel);
+				
 				continueDown();//下一个
 				return;
 			}
-			var fStream:FileStream;
+			var fStream:FileStream = new FileStream();;
 			if (loadmodel.tempFile.exists) {//临时文件存在,还没下完
 				fStream.open(loadmodel.tempFile, FileMode.READ);
 				loadmodel.startPoint = fStream.bytesAvailable;
@@ -108,7 +114,7 @@ package com.ucvcbbs.downLoad
 				loadmodel.startPoint = 0;
 			}
 			loadmodel.endPoint = loadmodel.startPoint;
-			trace("开始啦,"+tempurl+"从 "+loadmodel.startPoint+" 开始");
+			//trace("开始啦,"+tempurl+"从 "+loadmodel.startPoint+" 开始");
 			breakDownLoad(loadmodel);
 		}
 		
@@ -116,17 +122,13 @@ package com.ucvcbbs.downLoad
 		 * 下一个
 		 */
 		private function continueDown():void {
-			var ary:Array = db.selectData(TB_UNFINISH,null,{autoLoad:"true"});
+			var ary:Array = db.selectData(TB_UNFINISH,null,{autoLoad:"true",isLoading:"false"},"AND");
 			if (ary && ary.length > 0) {
-				//curURL = ary[0].url;
-				//继续开始下载
-				//loadURLTobreakPoint(curURL);
 				addDownload(ary[0].url, true);
 			}else {
-				//已经没有了,所以文件都已经完成
-				trace("所有文件下载完毕");
-				//isStart = false;
-				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ALLCOMPLETE));//allFileLoadComplete
+				//已经没有了
+				//trace("已经没有是下载状态的了");
+				//dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ALLCOMPLETE));//allFileLoadComplete
 			}
 		}
 		
@@ -136,6 +138,10 @@ package com.ucvcbbs.downLoad
 		private function breakDownLoad(loadmodel:LoadModel):void {
 			if (loadmodel.startPoint >= loadmodel.total) {
 				trace(loadmodel.request.url + "下载完成");
+				//删掉urlDic,loadDict对应的key
+				deleteLoadModel(loadmodel);
+				
+				
 				continueDown();//下一个
 				return;
 			}
@@ -148,7 +154,7 @@ package com.ucvcbbs.downLoad
 			loadmodel.request.url = loadmodel.url;
 			var h:URLRequestHeader = new URLRequestHeader("Range", "bytes=" + loadmodel.startPoint + "-" + loadmodel.endPoint);
 			loadmodel.request.requestHeaders.push(h);
-			loadmodel.load.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			//loadmodel.load.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loadmodel.load.addEventListener(Event.COMPLETE, breakLoadComplete);
 			loadmodel.load.load(loadmodel.request);
 		}
@@ -160,31 +166,29 @@ package com.ucvcbbs.downLoad
 		private function breakLoadComplete(e:Event):void 
 		{
 			var loadmodel:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
+			if (!loadmodel||!loadmodel.load||!loadmodel.tempFile) return;
 			var bytes:ByteArray = e.target.data as ByteArray;
-			var fStream:FileStream=new FileStream()
+			var fStream:FileStream = new FileStream();
+			//trace("loadmodel:" + loadmodel.url);
 			fStream.open(loadmodel.tempFile, FileMode.UPDATE);
 			fStream.position = loadmodel.startPoint;
 			fStream.writeBytes(bytes, 0, bytes.length);
 			fStream.close();
-			loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			//loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loadmodel.load.removeEventListener(Event.COMPLETE, breakLoadComplete);
+			
+			urlDict[loadDict[e.target]].progress = loadmodel.endPoint / loadmodel.total;
 			
 			//一个文件下载完成
 			if (loadmodel.endPoint >= loadmodel.total) {
 				loadmodel.endPoint = 0;
 				trace(loadmodel.url + " 下载完成");
-				tempfile.moveTo(loadmodel.curFile, true);
+				loadmodel.tempFile.moveTo(loadmodel.curFile, true);
 				//删除数据库中这条记录
-				laoddb.deleteData(TB_UNFINISH, { url:loadmodel.url } );
+				db.deleteData(TB_UNFINISH, { url:loadmodel.url } );
 				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ONEITEMCOMPLETE,false,false,loadmodel.url,loadmodel.curFile.url));
 				//删掉urlDic,loadDict对应的key
-				delete urlDict[loadmodel.url];
-				delete loadDict[loadmodel.load];
-				loadmodel.load = null;
-				loadmodel.request = null;
-				loadmodel.tempFile = null;
-				loadmodel.curFile = null;
-				loadmodel = null;
+				deleteLoadModel(loadmodel);
 				
 				continueDown();//下一个
 				return;
@@ -194,15 +198,24 @@ package com.ucvcbbs.downLoad
 		}
 		
 		/**
-		 * 单个进度
+		 * 区间进度
 		 * @param	e
 		 */
-		private function progressHandler(e:ProgressEvent):void 
+		/*private function progressHandler(e:ProgressEvent):void 
 		{
 			urlDict[loadDict[e.target]].progress = e.bytesLoaded / e.bytesTotal;
+		}*/
+		
+		private function deleteLoadModel(loadmodel:LoadModel):void {
+			delete urlDict[loadmodel.url];
+			delete loadDict[loadmodel.load];
+			loadmodel.load = null;
+			loadmodel.request = null;
+			loadmodel.tempFile = null;
+			loadmodel.curFile = null;
+			loadmodel = null;
+			curCount--;
 		}
-		
-		
 		
 		/**
 		 * 加入下载队列
@@ -210,13 +223,26 @@ package com.ucvcbbs.downLoad
 		 * @param	autoDownLoad 是否自动下载(加入下载队列)
 		 */
 		public function addDownload(url:String, autoDownLoad:Boolean = false):void {
+			if (!url) {
+				trace(url, "url没有值");
+				return;
+			}
 			var ary:Array=db.selectData(TB_UNFINISH, null, { url:url } );
 			if (ary && ary.length) {
-				db.update(TB_UNFINISH, { autoLoad:"true" }, { url:url } );
+				db.update(TB_UNFINISH, { autoLoad:String(autoDownLoad) }, { url:url } );
 			}else{
-				db.insert(TB_UNFINISH, { url:url, autoLoad:String(autoDownLoad) } );
+				db.insert(TB_UNFINISH, { url:url, autoLoad:String(autoDownLoad),isLoading:"false" } );
 			}
-			if (curCount < this._maxCount) {
+			//trace("curCount:" + curCount);
+			if (autoDownLoad && (curCount < this._maxCount)) {
+				
+				/*if (ary && ary.length && autoDownLoad) {
+					trace("继续:" + url);
+				}*/
+				
+				db.update(TB_UNFINISH, { isLoading:"true" }, { url:url } );
+				
+				
 				var load:URLLoader = new URLLoader();
 				var re:URLRequest = new URLRequest();
 				re.url = url;
@@ -239,13 +265,18 @@ package com.ucvcbbs.downLoad
 		 */
 		public function pauseToURL(url:String):void {
 			var loadmodel:LoadModel = urlDict[url] as LoadModel;
-			loadmodel.load.close();
-			loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			if (!loadmodel) {
+				trace("它没有在下载中");
+				return;
+			} 
+			
+			//loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loadmodel.load.removeEventListener(Event.COMPLETE, breakLoadComplete);
 			loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
 			loadmodel.load.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
+			loadmodel.load.close();
 			
-			db.update(TB_UNFINISH, { autoLoad:"false" }, { url:loadmodel.url } );
+			db.update(TB_UNFINISH, { autoLoad:"false",isLoading:"false"}, { url:loadmodel.url } );
 			
 			delete urlDict[loadmodel.url];
 			delete loadDict[loadmodel.load];
@@ -254,7 +285,9 @@ package com.ucvcbbs.downLoad
 			loadmodel.tempFile = null;
 			loadmodel.curFile = null;
 			loadmodel = null;
-			
+			//trace("curCount======:" + curCount);
+			curCount--;
+			//trace("curCount------:" + curCount);
 			continueDown();//下一个
 		}
 		

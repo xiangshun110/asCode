@@ -14,7 +14,7 @@ package com.ucvcbbs.downLoad
 		public var endPoint:Number;
 		public var startPoint:Number;
 		public var fileName:String;
-		public var progress:Number;
+		public var progress:Number=0;
 		public var request:URLRequest;
 		public var url:String;
 		public var tempFile:File;
