@@ -19,8 +19,8 @@
 		 * @return
 		 */
 		public static function getFileFromPath(path:String):File {
-			var f:File = new File();
-			return f.resolvePath(path);
+			var f:File = new File(path);
+			return f;
 		}
 		
 		/**
@@ -28,9 +28,22 @@
 		 * @param	path
 		 */
 		public static function deleteFromPath(path:String):void {
-			var f:File = getFileFromPath(path);
+			var f:File =new File(path);
 			if(f.exists){
 				f.deleteFile();
+				f = null;
+			}
+		}
+		
+		/**
+		 * 根据路径删除这个文件(异步)
+		 * @param	path
+		 */
+		public static function deleteAsyncFromPath(path:String):void {
+			var f:File = new File(path);
+			if(f.exists){
+				f.deleteFileAsync();
+				f = null;
 			}
 		}
 		
@@ -45,7 +58,12 @@
 			if (num != -1) {
 				str =  url.substring(7);
 			}else {
-				return "";
+				num = url.indexOf("https://");
+				if (num != -1) {
+					str =  url.substring(8);
+				}else{
+					return "";
+				}
 			}
 			
 			num = str.indexOf("/");
