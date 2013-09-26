@@ -66,7 +66,18 @@
 		}
 		
 		private function loadURLTobreakPoint(url:String):void {
+			var tempstr:String = curURL.toLocaleLowerCase();
+			tempstr = tempstr.substr(tempstr.length - 4);
+			if (tempstr != ".jpg" && tempstr != ".png" && tempstr != ".gif") {
+				//删除这一个
+				laoddb.deleteData("unfinished", { url:curURL } );
+				//下一个;
+				continueDown();
+				return;
+			}
+			
 			_curCount++;
+			trace("开始下载:" + curURL);
 			curURL = url;
 			lod = new URLLoader();
 			lod.addEventListener(IOErrorEvent.IO_ERROR, lodError);
@@ -77,10 +88,17 @@
 			lod.load(re);
 		}
 		
+		
 		private function lodError(e:IOErrorEvent):void 
 		{
 			lod.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
 			lod.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
+			lod.removeEventListener(Event.COMPLETE, breakLoadComplete);
+			lod = null;
+			//删除这一个
+			laoddb.deleteData("unfinished", { url:curURL } );
+			//下一个;
+			continueDown();
 		}
 		
 		/**
@@ -91,6 +109,7 @@
 		{
 			lod.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
 			lod.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
+			lod.removeEventListener(Event.COMPLETE, breakLoadComplete);
 			totalPoint = e.bytesTotal;
 			lod.close();
 			lod = null;
@@ -155,6 +174,7 @@
 			re.requestHeaders.push(h);
 			lod.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			lod.addEventListener(Event.COMPLETE, breakLoadComplete);
+			lod.addEventListener(IOErrorEvent.IO_ERROR,lodError);
 			lod.load(re);
 		}
 		
@@ -263,6 +283,14 @@
 		 */
 		public function get curCount():int {
 			return _curCount;
+		}
+		
+		/**
+		 * 根据URL删除这条记录
+		 * @param	url
+		 */
+		public function deleteItem(url:String):void {
+			laoddb.deleteData("unfinished", { url:url } );
 		}
 		
 		

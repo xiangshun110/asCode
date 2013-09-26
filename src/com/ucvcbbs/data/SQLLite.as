@@ -205,7 +205,9 @@ package com.ucvcbbs.data
 					if (ofDateObj[obj2] is Number) {
 						s2 += obj2 + "=" + ofDateObj[obj2]+" "+oa+" ";
 					}else {
-						s2 += obj2 + "='" + ofDateObj[obj2]+"' "+oa+" ";
+						ofDateObj[obj2] = StringTools.replaceAllByRegex(ofDateObj[obj2], "'", "‘");
+						s2 += obj2 + "='" + ofDateObj[obj2] + "' " + oa + " ";
+						
 					}
 				}
 				s2 = s2.substr(0, (s2.length - (oa.length+1)));
