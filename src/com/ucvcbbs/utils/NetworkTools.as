@@ -1,18 +1,24 @@
 ﻿package com.ucvcbbs.utils 
 {
+	import air.net.URLMonitor;
+	import com.ucvcbbs.events.NetworkEvent;
 	import flash.display.Stage;
+	import flash.events.EventDispatcher;
+	import flash.events.StatusEvent;
 	import flash.net.InterfaceAddress;
 	import flash.net.NetworkInfo;
 	import flash.net.NetworkInterface;
 	import flash.net.ServerSocket;
 	import flash.net.Socket;
+	import flash.net.URLRequest;
 	/**
-	 * ...
+	 * ...Air版,flash编译需要添加本文件夹中的aircore.swc
 	 * @author xiangshun
 	 */
 	public class NetworkTools 
 	{
-		
+		private static var monitor:URLMonitor;
+		private static var _evtObj:EventDispatcher = new EventDispatcher();
 		public function NetworkTools() 
 		{
 			
@@ -70,6 +76,40 @@
 				getUsableLocalPort(startPort);
 			}
 			return tnum;
+		}
+		
+		/**
+		 * 开始检测网络状况,需要用NetworkTools._evtObj监听NetworkEvent.NETINFO时间
+		 * @param	url
+		 */
+		public static function startNetMonitor(url:String = "http://www.baidu.com"):void {
+			if(!monitor){
+				monitor = new URLMonitor(new URLRequest(url));
+				monitor.addEventListener(StatusEvent.STATUS, announceStatus); 
+			}
+			monitor.urlRequest = new URLRequest(url);
+			monitor.start();
+		}
+		private static function announceStatus(evt:StatusEvent):void {
+			if (monitor.available) {
+				NetworkTools._evtObj.dispatchEvent(new NetworkEvent(NetworkEvent.NETINFO, true));
+				
+			}else {
+				NetworkTools._evtObj.dispatchEvent(new NetworkEvent(NetworkEvent.NETINFO, false));
+				
+			}
+		}
+		
+		public static function stopNetMonitor():void {
+			if (monitor) {
+				monitor.stop();
+				monitor.urlRequest = null;
+			}
+		}
+		
+		static public function get evtObj():EventDispatcher 
+		{
+			return _evtObj;
 		}
 		
 	}
