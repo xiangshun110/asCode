@@ -66,6 +66,13 @@
 		}
 		
 		private function loadURLTobreakPoint(url:String):void {
+			if (!url) {
+				//删除这一个
+				laoddb.deleteData("unfinished", { url:url } );
+				//下一个;
+				continueDown();
+				return;
+			}
 			var tempstr:String = curURL.toLocaleLowerCase();
 			tempstr = tempstr.substr(tempstr.length - 4);
 			if (tempstr != ".jpg" && tempstr != ".png" && tempstr != ".gif") {
