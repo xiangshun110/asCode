@@ -71,7 +71,7 @@ package com.ucvcbbs.downLoad
 			
 			var loadmodel:LoadModel = loadDict[e.target];
 			loadmodel.load.close();
-			db.deleteData(TB_UNFINISH, { url:loadmodel.url } );
+			//db.deleteData(TB_UNFINISH, { url:loadmodel.url } );//不能删，因为有时候下载中也会下载出错
 			//删掉urlDic,loadDict对应的key
 			deleteLoadModel(loadmodel);
 			continueDown();//下一个
