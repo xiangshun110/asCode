@@ -34,17 +34,43 @@
 			return str;
 		}
 		
+		
 		/**
 		 * 字符串返回年月日时分秒全部用“-”间隔
+		 * @param	isMilli 是否要毫秒
 		 * @return
 		 */
-		static public function getCurTime2():String {
+		static public function getCurTime2(isMilli:Boolean=false):String {
 			var d:Date = new Date();
 			var str:String;
 			str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-			str += "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+			if(!isMilli){
+				str += "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+			}else {
+				str += "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds()+ "-" + d.getMilliseconds();
+			}
 			return str;
 		}
+		
+		
+		/**
+		 * 字符串返回年月日时分秒 例如:2013-10-10 17:22:30
+		 * @param	isMilli 是否要毫秒
+		 * @return
+		 */
+		static public function getCurTime3(isMilli:Boolean=false):String {
+			var d:Date = new Date();
+			var str:String;
+			str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+			if(!isMilli){
+				str += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+			}else {
+				str += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()+ "." + d.getMilliseconds();
+			}
+			return str;
+		}
+		
+		
 		
 	}
 

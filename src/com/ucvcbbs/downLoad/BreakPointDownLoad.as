@@ -1,6 +1,7 @@
 ﻿package com.ucvcbbs.downLoad 
 {
 	//import cn.eDoctor.Baraclude.events.AppEvent;
+	//import com.ucvcbbs.controls.MyAlert;
 	import com.ucvcbbs.data.SQLLite;
 	import com.ucvcbbs.events.BreakPointDownLoadEvent;
 	import com.ucvcbbs.utils.AppTools;
@@ -73,7 +74,9 @@
 				continueDown();
 				return;
 			}
-			var tempstr:String = curURL.toLocaleLowerCase();
+			
+			//只下载图片,微博在用
+			/*var tempstr:String = curURL.toLocaleLowerCase();
 			tempstr = tempstr.substr(tempstr.length - 4);
 			if (tempstr != ".jpg" && tempstr != ".png" && tempstr != ".gif") {
 				//删除这一个
@@ -81,7 +84,7 @@
 				//下一个;
 				continueDown();
 				return;
-			}
+			}*/
 			
 			_curCount++;
 			trace("开始下载:" + curURL);
@@ -98,12 +101,17 @@
 		
 		private function lodError(e:IOErrorEvent):void 
 		{
+			//MyAlert
+			//如果下载出错,不能删
+			//Singleton.showAlert(curURL + "下载出错");
+			
 			lod.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
 			lod.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
 			lod.removeEventListener(Event.COMPLETE, breakLoadComplete);
 			lod = null;
+			re = null;
 			//删除这一个
-			laoddb.deleteData("unfinished", { url:curURL } );
+			//laoddb.deleteData("unfinished", { url:curURL } );
 			//下一个;
 			continueDown();
 		}
@@ -120,6 +128,7 @@
 			totalPoint = e.bytesTotal;
 			lod.close();
 			lod = null;
+			re = null;
 			trace(curURL+" , totalPoint:" + totalPoint);
 			startDownLoad();
 		}
@@ -128,8 +137,15 @@
 		 * 下载前的准备活动
 		 */
 		private function startDownLoad():void {
-			if (curURL == "") return;
+			if (curURL == "") {
+				//删除这一个
+				laoddb.deleteData("unfinished", { url:curURL } );
+				//下一个;
+				continueDown();
+				return;
+			} 
 			//先看本地有没有这个文件
+			
 			var num:int = curURL.lastIndexOf("/");
 			if (num != -1) {
 				_curFileName=curURL.substring(num + 1);
@@ -142,7 +158,7 @@
 			//trace(tempfile,tempfile.exists)
 			
 			if (curfile.exists) {
-				trace("文件已经有了。。");
+				trace("文件已经有了,继续下一个.");
 				//删除记录
 				laoddb.deleteData("unfinished", { url:curURL } );
 				continueDown();
@@ -169,7 +185,7 @@
 				continueDown();
 				return;
 			}
-			endPoint += 10000;
+			endPoint += 100000;
 			if (endPoint >= totalPoint) {
 				endPoint = totalPoint;
 			}
@@ -197,8 +213,9 @@
 			fStream.close();
 			lod.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			lod.removeEventListener(Event.COMPLETE, breakLoadComplete);
+			lod.removeEventListener(IOErrorEvent.IO_ERROR,lodError);
 			lod = null;
-			
+			re = null;
 			if (endPoint >= totalPoint) {
 				endPoint = 0;
 				trace(curfile.url + " 下载完成");
@@ -250,11 +267,13 @@
 		public function addURLDownLoad(fileURL:String):void {
 			laoddb.insert("unfinished", { url:fileURL } );
 			_totalCount++;
+			//trace("加入一个,", isStart);
 			if (!isStart) {
 				curURL = fileURL;
 				loadURLTobreakPoint(curURL);
 				isStart = true;
 			}
+			
 		}
 		
 		/**
@@ -268,6 +287,7 @@
 		 * 当前这个文件的下载进度
 		 */
 		public function get curProgress():Number {
+			//trace("endPoint:" + endPoint, totalPoint);
 			return endPoint/totalPoint;
 		}
 		

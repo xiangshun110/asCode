@@ -34,7 +34,7 @@ package com.ucvcbbs.downLoad
 		private var loadDict:Dictionary;
 		private var deleteAry:Array = new Array();
 		
-		public function BreakPointDownMulti(countMax:int=3) 
+		public function BreakPointDownMulti(countMax:int=2) 
 		{
 			_maxCount = countMax;
 			init();
@@ -49,9 +49,11 @@ package com.ucvcbbs.downLoad
 			obj.progress = "TEXT";//下载进度
 			db.creatTable(TB_UNFINISH, obj);
 			
+			
+			
 			urlDict = new Dictionary();//key是URL，value是loadModel
 			loadDict = new Dictionary();//key是load，value是load的url
-			
+			//return;
 			//检查没下载完的
 			var ary:Array = db.selectData(TB_UNFINISH, null, { autoLoad:"true",isLoading:"true" },"AND" );
 			if (ary && ary.length) {
@@ -63,6 +65,7 @@ package com.ucvcbbs.downLoad
 		
 		private function lodError(e:IOErrorEvent):void 
 		{
+			trace("BrakPointDownMulti:" + e);
 			e.target.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
 			e.target.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
 			
@@ -153,18 +156,17 @@ package com.ucvcbbs.downLoad
 				trace(loadmodel.url + "下载完成");
 				//删掉urlDic,loadDict对应的key
 				deleteLoadModel(loadmodel);
-				
-				
 				continueDown();//下一个
 				return;
 			}
-			loadmodel.endPoint += 10000;
+			loadmodel.endPoint += 500000;
 			if (loadmodel.endPoint >= loadmodel.total) {
 				loadmodel.endPoint = loadmodel.total;
 			}
 			loadmodel.load.dataFormat = URLLoaderDataFormat.BINARY;
 			loadmodel.request = new URLRequest();
 			loadmodel.request.url = loadmodel.url;
+			//trace("loadmodel.url:" + loadmodel.url);
 			var h:URLRequestHeader = new URLRequestHeader("Range", "bytes=" + loadmodel.startPoint + "-" + loadmodel.endPoint);
 			loadmodel.request.requestHeaders.push(h);
 			//loadmodel.load.addEventListener(ProgressEvent.PROGRESS, progressHandler);
@@ -307,7 +309,7 @@ package com.ucvcbbs.downLoad
 					trace("继续:" + url);
 				}*/
 				
-				//trace("加入：" + url + ".并开始下载");
+				trace("加入：" + url + ".并开始下载");
 				
 				db.update(TB_UNFINISH, { isLoading:"true" }, { url:url } );
 				
@@ -391,7 +393,8 @@ package com.ucvcbbs.downLoad
 		 * 根据URL得到它的Loadmodel
 		 * @param	url
 		 */
-		public function getLoadmodelFormURL(url:String):LoadModel{
+		public function getLoadmodelFormURL(url:String):LoadModel {
+			//trace(url + ":" + urlDict[url]);
 			return urlDict[url];
 		}
 		
