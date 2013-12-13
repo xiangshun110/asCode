@@ -83,11 +83,12 @@
 		 * @param	url
 		 */
 		public static function startNetMonitor(url:String = "http://www.baidu.com"):void {
-			if(!monitor){
-				monitor = new URLMonitor(new URLRequest(url));
-				monitor.addEventListener(StatusEvent.STATUS, announceStatus); 
+			if (monitor) {
+				monitor.removeEventListener(StatusEvent.STATUS, announceStatus); 
+				monitor = null;
 			}
-			monitor.urlRequest = new URLRequest(url);
+			monitor = new URLMonitor(new URLRequest(url));
+			monitor.addEventListener(StatusEvent.STATUS, announceStatus); 
 			monitor.start();
 		}
 		private static function announceStatus(evt:StatusEvent):void {
@@ -103,7 +104,6 @@
 		public static function stopNetMonitor():void {
 			if (monitor) {
 				monitor.stop();
-				monitor.urlRequest = null;
 			}
 		}
 		

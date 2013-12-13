@@ -3,13 +3,14 @@ package com.ucvcbbs.data
 	import com.ucvcbbs.utils.AppTools;
 	import com.ucvcbbs.utils.StringTools;
 	import com.ucvcbbs.utils.SystemName;
-	import flash.events.EventDispatcher;
-	import flash.filesystem.File;
+	
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
-	import flash.events.SQLEvent;
-	import flash.events.SQLErrorEvent;
 	import flash.errors.SQLError;
+	import flash.events.EventDispatcher;
+	import flash.events.SQLErrorEvent;
+	import flash.events.SQLEvent;
+	import flash.filesystem.File;
 	/**
 	 * ...一个SQLLite只能用于一个数据库
 	 * 星号等特殊符号需要加个单引号
@@ -24,39 +25,51 @@ package com.ucvcbbs.data
 		private var dbName:String;//数据库名字
 		private var attrObj:Object;//字段对象
 		private var _dbPathAndName:String;//数据库的路径跟名字，以程序的安装目录为跟目录
-		public function SQLLite(dbPathAndName:String) 
+		/**
+		 * 创建一个数据库,如果是相对程序的路径，前面不要带斜杠“/”,例如:"db/mydb.db"
+		 * @param dbPathAndName
+		 * @param isRelative 是否相对程序的路径
+		 * 
+		 */		
+		public function SQLLite(dbPathAndName:String,isRelative:Boolean=true) 
 		{
 			_dbPathAndName = dbPathAndName;
-			creatDB(_dbPathAndName);
+			creatDB(_dbPathAndName,isRelative);
 		}
 		
 		/**
-		 * 创建一个数据库,路径前不要带斜杠“/”,例如:"db/mydb.db"
-		 * @param	dbPath 数据库名称及路径，
-		 */
-		private function creatDB(dbPath:String):void {
-			var str:String;
-			switch(AppTools.getSystemName()) {
-				case SystemName.WINDOWS:
-					str = AppTools.getAppPath()+"/"+dbPath;
-					break;
-				case SystemName.MAC:
-					str = AppTools.getAppPath()+"/"+dbPath;
-					break;
-				case SystemName.IOS://--/Library
-					str = AppTools.getAppPath();
-					str = AppTools.getParentURL(str);
-					str += ("/Library/" + dbPath);
-					break;
-				case SystemName.LINUX:
-					str = AppTools.getStoragePath() +"/"+dbPath;
-					break;
+		 * 创建一个数据库,如果是相对程序的路径，前面不要带斜杠“/”,例如:"db/mydb.db"
+		 * @param dbPath
+		 * @param isRlative 是否相对程序的路径
+		 * 
+		 */		
+		private function creatDB(dbPath:String,isRelative:Boolean=true):void {
+			if(isRelative){
+				var str:String;
+				switch(AppTools.getSystemName()) {
+					case SystemName.WINDOWS:
+						str = AppTools.getAppPath()+"/"+dbPath;
+						break;
+					case SystemName.MAC:
+						str = AppTools.getAppPath()+"/"+dbPath;
+						break;
+					case SystemName.IOS://--/Library
+						str = AppTools.getAppPath();
+						str = AppTools.getParentURL(str);
+						str += ("/Library/" + dbPath);
+						break;
+					case SystemName.LINUX:
+						str = AppTools.getStoragePath() +"/"+dbPath;
+						break;
+				}
+				/*var str:String = File.applicationDirectory.nativePath;
+				str += ("/" + dbPath);*/
+				trace(str);
+				dbFile = new File();
+				dbFile = dbFile.resolvePath(str);
+			}else{
+				dbFile = new File(dbPath);
 			}
-			/*var str:String = File.applicationDirectory.nativePath;
-			str += ("/" + dbPath);*/
-			trace(str);
-			dbFile = new File();
-			dbFile = dbFile.resolvePath(str);
 			dbFile.parent.createDirectory();
 			conn = new SQLConnection();
 			conn.addEventListener(SQLEvent.OPEN, createDBHandler);

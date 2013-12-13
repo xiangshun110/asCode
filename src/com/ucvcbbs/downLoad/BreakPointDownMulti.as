@@ -3,7 +3,6 @@ package com.ucvcbbs.downLoad
 	import com.ucvcbbs.data.SQLLite;
 	import com.ucvcbbs.events.BreakPointDownLoadEvent;
 	import com.ucvcbbs.utils.FileTools;
-	import com.vsdevelop.system.Gc;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;

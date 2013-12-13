@@ -70,7 +70,21 @@
 			return str;
 		}
 		
-		
+		//
+		/**
+		 * 字符串返回年月日时分秒 例如:2000-03-12T11:33:27+00:00
+		 * @param	isMilli 是否要毫秒
+		 * @return
+		 */
+		static public function getCurTime4():String {
+			var d:Date = new Date();
+			var str:String;
+			str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()+"T";
+			
+			str += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()+"+00:00";
+			
+			return str;
+		}
 		
 	}
 
