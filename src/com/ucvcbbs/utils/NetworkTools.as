@@ -48,6 +48,25 @@
 		}
 		
 		/**
+		 * 获取mac地址
+		 * @return
+		 */
+		public static function getLocalMacAddress():String {
+			var networkInfo:NetworkInfo = NetworkInfo.networkInfo;
+			var interfaces:Vector.<NetworkInterface> = networkInfo.findInterfaces();
+			if( interfaces != null )
+			{
+				for each ( var interfaceObj:NetworkInterface in interfaces )
+				{
+					if (interfaceObj.hardwareAddress != "") {
+						return interfaceObj.hardwareAddress;
+					}
+				}            
+			}
+			return null;
+		}
+		
+		/**
 		 * 检查端口是否被占用
 		 * @param	address IP地址
 		 * @param	port 端口
