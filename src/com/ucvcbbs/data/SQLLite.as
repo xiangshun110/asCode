@@ -228,9 +228,9 @@ package com.ucvcbbs.data
 			}else {
 				sql = s1;
 			}
-			excuteSQL(sql);
+			return excuteSQL(sql);
 			//trace("statement.getResult().data:"+statement.getResult().data);
-			return (statement.getResult().data as Array);
+			//return (statement.getResult().data as Array);
 		}
 		
 		/**
@@ -272,9 +272,9 @@ package com.ucvcbbs.data
 			}else {
 				sql = s1;
 			}
-			excuteSQL(sql);
+			return excuteSQL(sql);
 			//trace("statement.getResult().data:"+statement.getResult().data);
-			return (statement.getResult().data as Array);
+			//return (statement.getResult().data as Array);
 		}
 		
 		/**
@@ -286,9 +286,9 @@ package com.ucvcbbs.data
 		public function distinctSelectData(tbnameStr:String, keyword:String):Array {
 			var s1:String = "SELECT DISTINCT ";
 			s1 += keyword + " FROM " + tbnameStr;
-			excuteSQL(s1);
+			return excuteSQL(s1);
 			//trace("statement.getResult().data:"+statement.getResult().data);
-			return (statement.getResult().data as Array);
+			//return (statement.getResult().data as Array);
 		}
 		
 		
@@ -312,8 +312,8 @@ package com.ucvcbbs.data
 			}
 			var sql:String =" ALTER TABLE " + tbnameStr + " ADD ";
 			sql += s1;
-			excuteSQL(sql);
-			return (statement.getResult().data as Array);
+			return excuteSQL(sql);
+			//return (statement.getResult().data as Array);
 		}
 		
 		/**
@@ -357,8 +357,8 @@ package com.ucvcbbs.data
 			}
 			sql += " ORDER BY " + key +" " + order+" LIMIT "+count;
 			//trace(sql);
-			excuteSQL(sql);
-			return (statement.getResult().data as Array);
+			return excuteSQL(sql);
+			//return (statement.getResult().data as Array);
 		}
 		
 		/**
@@ -368,8 +368,7 @@ package com.ucvcbbs.data
 		 */
 		public function getTotalCount(tbnameStr:String):int {
 			var sql:String = "select count(*) from " + tbnameStr;
-			excuteSQL(sql);
-			var ary:Array = (statement.getResult().data as Array);
+			var ary:Array = excuteSQL(sql);;
 			if (ary && ary.length) {
 				return ary[0]["count(*)"];
 			}
@@ -385,8 +384,8 @@ package com.ucvcbbs.data
 		 */
 		public function selectForLimit(tbnameStr:String, startIndex:int, len:int):Array {
 			var sql:String = "select * from " + tbnameStr + " limit " + (startIndex - 1) + "," + len;
-			excuteSQL(sql);
-			return (statement.getResult().data as Array);
+			return excuteSQL(sql);
+			//return (statement.getResult().data as Array);
 		}
 		
 		
@@ -394,7 +393,7 @@ package com.ucvcbbs.data
 		 * 执行一个SQL语句
 		 * @param	sqlStr  要执行的SQL语句
 		 */
-		public function excuteSQL(sqlStr:String):void {
+		public function excuteSQL(sqlStr:String):Array {
 			//trace("sqlStr:" + sqlStr);
 			conn.open(dbFile);
 			statement.text = sqlStr;
@@ -405,6 +404,7 @@ package com.ucvcbbs.data
 			}catch (evt:SQLError) {
 				throw new Error("执行SQL数据出错");
 			}
+			return (statement.getResult().data as Array);
 		}
 		
 		
