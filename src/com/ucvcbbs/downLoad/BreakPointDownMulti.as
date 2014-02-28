@@ -67,8 +67,8 @@ package com.ucvcbbs.downLoad
 			trace("BrakPointDownMulti:" + e);
 			e.target.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
 			e.target.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
-			
-			var loadmodel:LoadModel = loadDict[e.target];
+			//urlDict[loadDict[e.target]] as LoadModel;
+			var loadmodel:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			loadmodel.load.close();
 			//db.deleteData(TB_UNFINISH, { url:loadmodel.url } );//不能删，因为有时候下载中也会下载出错
 			//删掉urlDic,loadDict对应的key
@@ -158,7 +158,7 @@ package com.ucvcbbs.downLoad
 				continueDown();//下一个
 				return;
 			}
-			loadmodel.endPoint += 500000;
+			loadmodel.endPoint += 100000;
 			if (loadmodel.endPoint >= loadmodel.total) {
 				loadmodel.endPoint = loadmodel.total;
 			}
@@ -170,6 +170,17 @@ package com.ucvcbbs.downLoad
 			loadmodel.request.requestHeaders.push(h);
 			//loadmodel.load.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loadmodel.load.addEventListener(Event.COMPLETE, breakLoadComplete);
+			loadmodel.load.addEventListener(IOErrorEvent.IO_ERROR,breakLoadError);
+			loadmodel.load.load(loadmodel.request);
+		}
+		
+		/**
+		 * 区间下载出错
+		 * @param	e
+		 */
+		private function breakLoadError(e:IOErrorEvent):void 
+		{
+			var loadmodel:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			loadmodel.load.load(loadmodel.request);
 		}
 		
@@ -199,7 +210,7 @@ package com.ucvcbbs.downLoad
 			fStream.close();
 			//loadmodel.load.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loadmodel.load.removeEventListener(Event.COMPLETE, breakLoadComplete);
-			
+			loadmodel.load.removeEventListener(IOErrorEvent.IO_ERROR,breakLoadError);
 			
 			
 			loadmodel.progress = loadmodel.endPoint / loadmodel.total;
