@@ -154,10 +154,27 @@ package com.ucvcbbs.downLoad
 		 */
 		private function breakDownLoad(loadmodel:LoadModel):void {
 			if (loadmodel.startPoint >= loadmodel.total) {
-				trace(loadmodel.url + "下载完成");
+				/*trace(loadmodel.url + "下载完成");
 				//删掉urlDic,loadDict对应的key
 				deleteLoadModel(loadmodel);
+				continueDown();//下一个*/
+				
+				trace(loadmodel.endPoint,loadmodel.total,loadmodel.url + " 下载完成,breakLoadComplete中!!");
+				loadmodel.endPoint = 0;
+				loadmodel.tempFile.moveTo(loadmodel.curFile, true);
+				//删除数据库中这条记录
+				db.deleteData(TB_UNFINISH, { url:loadmodel.url } );
+				
+				var u1:String = loadmodel.url;
+				var u2:String = loadmodel.curFile.url;
+				//删掉urlDic,loadDict对应的key
+				deleteLoadModel(loadmodel);
+				
+				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ONEITEMCOMPLETE,false,false,u1,u2));
+				
 				continueDown();//下一个
+				
+				
 				return;
 			}
 			loadmodel.endPoint += 100000;
@@ -317,7 +334,7 @@ package com.ucvcbbs.downLoad
 				return;
 			}
 			var ary:Array=db.selectData(TB_UNFINISH, null, { url:url } );
-			if (ary && ary.length) {
+			if (ary && ary.length) {//有这个URL
 				db.update(TB_UNFINISH, { autoLoad:String(autoDownLoad) }, { url:url } );
 			}else{
 				db.insert(TB_UNFINISH, { url:url, autoLoad:String(autoDownLoad),isLoading:"false" } );
