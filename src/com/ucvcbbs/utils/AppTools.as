@@ -119,7 +119,7 @@ package com.ucvcbbs.utils
 					pstr += "/Library";
 					break;
 				case SystemName.LINUX:
-					pstr = AppTools.getAppPath();
+					pstr = AppTools.getStoragePath();
 					break;
 			}
 			return pstr;
