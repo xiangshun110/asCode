@@ -118,6 +118,9 @@ package com.ucvcbbs.utils
 					pstr = AppTools.getParentURL(pstr);
 					pstr += "/Library";
 					break;
+				case SystemName.LINUX:
+					pstr = AppTools.getAppPath();
+					break;
 			}
 			return pstr;
 		}
