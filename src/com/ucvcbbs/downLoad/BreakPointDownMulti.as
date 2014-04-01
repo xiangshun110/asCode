@@ -310,7 +310,7 @@ package com.ucvcbbs.downLoad
 		}
 		
 		/**
-		 * 根据uel得到下载进度
+		 * 根据uel得到下载进度,返回-1就是没找到
 		 * @param	url
 		 * @return
 		 */
@@ -319,7 +319,7 @@ package com.ucvcbbs.downLoad
 			if (ary && ary.length) {
 				return Number(ary[0].progress);
 			}else {
-				return 0;
+				return -1;
 			}
 		}
 		
