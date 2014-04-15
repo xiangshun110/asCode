@@ -1,7 +1,7 @@
 package com.ucvcbbs.scroll
 {
 	import flash.display.DisplayObject;
-	import com.vsdevelop.system.CapabilitiesCore;
+	import com.ucvcbbs.utils.CapabilitiesCore;
 	import flash.display.Sprite;
 	/**
 	 * ...

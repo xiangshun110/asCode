@@ -2,8 +2,11 @@
 {
 	import com.greensock.TweenLite;
 	import com.ucvcbbs.events.ScrollEvent;
-	import com.vsdevelop.system.CapabilitiesCore;
-	import com.vsdevelop.utils.StringCore;
+	import com.ucvcbbs.utils.AppTools;
+	import com.ucvcbbs.utils.SystemName;
+	//import com.vsdevelop.system.CapabilitiesCore;
+	import com.ucvcbbs.utils.CapabilitiesCore;
+	//import com.vsdevelop.utils.StringCore;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -256,10 +259,15 @@
 				this.addEventListener(Event.ENTER_FRAME, drag_mouseUpHandler_H);
 			/*}*/
 			
-			if (StringCore.checkKeyWord(CapabilitiesCore.getOS, "Linux"))
+			/*if (StringCore.checkKeyWord(CapabilitiesCore.getOS, "Linux"))
 			{
 				ProhibitedDrag = true;
+			}*/
+			
+			if (AppTools.getSystemName() == SystemName.LINUX) {
+				ProhibitedDrag = true;
 			}
+			
 		}
 		//开始拖动
 		private function detectDirection_mouseMoveHandler_Y(e:MouseEvent):void
@@ -271,7 +279,7 @@
 				e.stopPropagation();
 			}
 			
-			if (StringCore.checkKeyWord(CapabilitiesCore.getOS, "Linux"))
+			if (AppTools.getSystemName() == SystemName.LINUX) 
 			{
 				if (Math.abs(root.mouseY - previousDragMouseY) > 50 && ProhibitedDrag)
 				{
