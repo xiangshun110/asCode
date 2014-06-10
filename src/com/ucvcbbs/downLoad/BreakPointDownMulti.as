@@ -145,7 +145,7 @@ package com.ucvcbbs.downLoad
 			}else {
 				//已经没有了
 				//trace("已经没有是下载状态的了");
-				//dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ALLCOMPLETE));//allFileLoadComplete
+				dispatchEvent(new BreakPointDownLoadEvent(BreakPointDownLoadEvent.ALLCOMPLETE));//allFileLoadComplete
 			}
 		}
 		

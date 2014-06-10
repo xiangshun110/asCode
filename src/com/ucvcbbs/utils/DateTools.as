@@ -86,6 +86,20 @@
 			return str;
 		}
 		
+		
+		/**
+		 * 返回年月日
+		 * @param	sp间隔符号
+		 * @return
+		 */
+		static public function getCurTime5(sp:String="-"):String {
+			var d:Date = new Date();
+			var str:String;
+			str = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+			
+			return str;
+		}
+		
 	}
 
 }
