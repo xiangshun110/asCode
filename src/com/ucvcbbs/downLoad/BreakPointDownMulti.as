@@ -2,7 +2,9 @@ package com.ucvcbbs.downLoad
 {
 	import com.ucvcbbs.data.SQLLite;
 	import com.ucvcbbs.events.BreakPointDownLoadEvent;
+	import com.ucvcbbs.utils.AppTools;
 	import com.ucvcbbs.utils.FileTools;
+	import com.ucvcbbs.utils.SystemName;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -41,15 +43,17 @@ package com.ucvcbbs.downLoad
 		}
 		
 		private function init():void {
-			db = new SQLLite("database/download.db");
+			if (AppTools.getSystemName() == SystemName.WINDOWS) {
+				db = new SQLLite(AppTools.getDocmentPath()+"/database/download.db",false);
+			}else{
+				db = new SQLLite("database/download.db");
+			}
 			var obj:Object = new Object();
 			obj.url = "TEXT";
 			obj.autoLoad = "TEXT";//false:不自动下载，true:进入下载队列
 			obj.isLoading = "TEXT";//是否下载中,false:没有  true:在
 			obj.progress = "TEXT";//下载进度
 			db.creatTable(TB_UNFINISH, obj);
-			
-			
 			
 			urlDict = new Dictionary();//key是URL，value是loadModel
 			loadDict = new Dictionary();//key是load，value是load的url
