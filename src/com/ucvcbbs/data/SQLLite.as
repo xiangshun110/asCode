@@ -54,9 +54,11 @@ package com.ucvcbbs.data
 						str = AppTools.getAppPath()+"/"+dbPath;
 						break;
 					case SystemName.IOS://--/Library
-						str = AppTools.getAppPath();
+						/*str = AppTools.getAppPath();
 						str = AppTools.getParentURL(str);
-						str += ("/Library/" + dbPath);
+						str += ("/Library/" + dbPath);*/
+						str = AppTools.getIOSLibraryPath() + "/" + dbPath;
+						
 						break;
 					case SystemName.LINUX:
 						str = AppTools.getStoragePath() +"/"+dbPath;
