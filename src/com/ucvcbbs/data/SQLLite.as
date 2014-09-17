@@ -46,9 +46,10 @@ package com.ucvcbbs.data
 		private function creatDB(dbPath:String,isRelative:Boolean=true):void {
 			if(isRelative){
 				var str:String;
+				
 				switch(AppTools.getSystemName()) {
 					case SystemName.WINDOWS:
-						str = AppTools.getAppPath()+"/"+dbPath;
+						str = AppTools.getAppPath() + "/" + dbPath;
 						break;
 					case SystemName.MAC:
 						str = AppTools.getAppPath()+"/"+dbPath;
@@ -57,16 +58,18 @@ package com.ucvcbbs.data
 						/*str = AppTools.getAppPath();
 						str = AppTools.getParentURL(str);
 						str += ("/Library/" + dbPath);*/
-						str = AppTools.getIOSLibraryPath() + "/" + dbPath;
-						
+						str = AppTools.getStoragePath() + "/" + dbPath;
 						break;
 					case SystemName.LINUX:
 						str = AppTools.getStoragePath() +"/"+dbPath;
 						break;
 				}
+				
+				//str = File.applicationStorageDirectory.nativePath + "/" + dbPath;
+				
 				/*var str:String = File.applicationDirectory.nativePath;
 				str += ("/" + dbPath);*/
-				trace(str);
+				//trace(str);
 				dbFile = new File();
 				dbFile = dbFile.resolvePath(str);
 			}else{

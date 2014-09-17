@@ -74,9 +74,10 @@
 						pstr = AppTools.getAppPath();
 						break;
 					case SystemName.IOS:
-						pstr = AppTools.getAppPath();
+						/*pstr = AppTools.getAppPath();
 						pstr = AppTools.getParentURL(pstr);
-						pstr += "/Library";
+						pstr += "/Library";*/
+						pstr = AppTools.getStoragePath();
 						break;
 					case SystemName.LINUX:
 						pstr = AppTools.getStoragePath();
