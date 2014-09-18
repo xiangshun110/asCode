@@ -121,7 +121,7 @@ package com.ucvcbbs.data
 		 * @param	tbnameStr 表名字
 		 * @param	dataObj 数据对象
 		 */
-		public function insert(tbnameStr:String,dataObj:Object):void {	
+		public function insert(tbnameStr:String,dataObj:Object):Array {	
 			var sql:String;
 			var sqlStr:String = "INSERT INTO "+tbnameStr+" (";
 			var sqlStr2:String = "VALUES(";
@@ -135,7 +135,7 @@ package com.ucvcbbs.data
 			sqlStr = sqlStr + ")";
 			sqlStr2 = sqlStr2 + ")";
 			sql = sqlStr + " " + sqlStr2;
-			excuteSQL(sql);
+			return excuteSQL(sql);
 		}
 		
 		
