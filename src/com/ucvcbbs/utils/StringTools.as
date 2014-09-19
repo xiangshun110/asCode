@@ -323,7 +323,7 @@
 	     * @return 
 	     * 
 	     */   
-	    public static function sort(arr:Array, key:String = ""):Array 
+	    public static function sortChinese(arr:Array, key:String = ""):Array 
 	    { 
 			var byte:ByteArray = new ByteArray(); 
 			var sortedArr:Array = []; 
