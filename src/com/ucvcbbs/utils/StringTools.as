@@ -354,7 +354,7 @@
 			
 			for (var i:int = 0; i < len; i++) 
 			{
-				trace(byte[i * 2], byte[i * 2 + 1]);
+				//trace(byte[i * 2], byte[i * 2 + 1]);
 				sortedArr[sortedArr.length] = {a: byte[i * 2], b: byte[i * 2 + 1], c: arr[i]}; 
 			}
 			
