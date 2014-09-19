@@ -317,39 +317,53 @@
 		}
 		
 		/** 
-	     * 中文排序 
+	     * 排序，支持中英混排 
 	     * @param arr 列表数组 
 	     * @param key 键名(键值数组时使用) 
 	     * @return 
 	     * 
 	     */   
-	    public static function sortChinese(arr:Array, key:String = ""):Array 
+	    public static function sort(arr:Array, key:String = ""):Array 
 	    { 
 			var byte:ByteArray = new ByteArray(); 
 			var sortedArr:Array = []; 
 			var returnArr:Array = []; 
 			var item:*; 
 			for each (item in arr) 
-			{ 
-			 if (key == "") 
-			 { 
-			  byte.writeMultiByte(String(item).charAt(0), "gb2312"); 
-			 } 
-			 else 
-			 { 
-			  byte.writeMultiByte(String(item[key]).charAt(0), "gb2312"); 
-			 } 
+			{
+				var word:String;
+				 if (key == "") 
+				 { 
+					word = String(item).charAt(0);
+				 } 
+				 else 
+				 {
+					word = String(item[key]).charAt(0);
+				 }
+				 
+				 if(isChinese(word)){
+					byte.writeMultiByte(word, "gb2312");
+				}else {
+					byte.writeMultiByte(word, "gb2312");
+					byte.writeMultiByte(word, "gb2312");
+				}
 			} 
 			byte.position = 0; 
+			//trace("len:" + byte.length);
 			var len:int = byte.length / 2; 
+			
 			for (var i:int = 0; i < len; i++) 
-			{ 
-			 sortedArr[sortedArr.length] = {a: byte[i * 2], b: byte[i * 2 + 1], c: arr[i]}; 
-			} 
-			sortedArr.sortOn(["a", "b"], [Array.DESCENDING | Array.NUMERIC]); 
+			{
+				trace(byte[i * 2], byte[i * 2 + 1]);
+				sortedArr[sortedArr.length] = {a: byte[i * 2], b: byte[i * 2 + 1], c: arr[i]}; 
+			}
+			
+			//sortedArr.sortOn(["a", "b"], [Array.DESCENDING | Array.NUMERIC]);
+			sortedArr.sortOn(["a", "b"],  Array.NUMERIC);
+			
 			for each (var obj:Object in sortedArr) 
 			{ 
-			 returnArr[returnArr.length] = obj.c; 
+				returnArr[returnArr.length] = obj.c; 
 			} 
 			return returnArr; 
 		} 
