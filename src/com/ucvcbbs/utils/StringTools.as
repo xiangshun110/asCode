@@ -317,7 +317,7 @@
 		}
 		
 		/** 
-	     * 排序，支持中英混排 
+	     * 中文排序 
 	     * @param arr 列表数组 
 	     * @param key 键名(键值数组时使用) 
 	     * @return 
@@ -332,22 +332,24 @@
 			for each (item in arr) 
 			{
 				var word:String;
-				 if (key == "") 
-				 { 
+				if (key == "") 
+				{ 
 					word = String(item).charAt(0);
-				 } 
-				 else 
-				 {
+				} 
+				else 
+				{
 					word = String(item[key]).charAt(0);
-				 }
+				}
 				 
-				 if(isChinese(word)){
+				byte.writeMultiByte(word, "gb2312");
+				
+				/*if(isChinese(word)){
 					byte.writeMultiByte(word, "gb2312");
 				}else {
-					byte.writeMultiByte(word, "gb2312");
-					byte.writeMultiByte(word, "gb2312");
-				}
-			} 
+					byte.writeMultiByte(word, "unicode");
+				}*/
+			}
+			
 			byte.position = 0; 
 			//trace("len:" + byte.length);
 			var len:int = byte.length / 2; 
@@ -358,15 +360,71 @@
 				sortedArr[sortedArr.length] = {a: byte[i * 2], b: byte[i * 2 + 1], c: arr[i]}; 
 			}
 			
-			//sortedArr.sortOn(["a", "b"], [Array.DESCENDING | Array.NUMERIC]);
-			sortedArr.sortOn(["a", "b"],  Array.NUMERIC);
+			sortedArr.sortOn(["a", "b"], [Array.DESCENDING | Array.NUMERIC]);
+			
+			//sortedArr.sortOn(["a", "b"],  Array.NUMERIC);
 			
 			for each (var obj:Object in sortedArr) 
 			{ 
 				returnArr[returnArr.length] = obj.c; 
 			} 
 			return returnArr; 
-		} 
+		}
+		/**
+		 * 中英混合排序
+		 * @param	arr
+		 * @param	key
+		 * @return
+		 */
+		public static function sortMixture(arr:Array, key:String = ""):Array {
+			var sortedArr:Array = []; 
+			var returnArr:Array = []; 
+			var item:*; 
+			for each (item in arr) 
+			{
+				var word:String;
+				if (key == "") 
+				{ 
+					word = String(item).charAt(0);
+				} 
+				else 
+				{
+					word = String(item[key]).charAt(0);
+				}
+				
+				switch(word) {
+					case "雪":
+						word = "x";
+						break;
+					case "讴":
+						word = "o";
+						break;
+				}
+				
+				if (isChinese(word)) {
+					sortedArr[sortedArr.length] = {a: convertChar(word), b:item }; 
+					//sortedArr.push(convertChar(word));
+					//trace(convertChar(word))
+				}else {
+					//sortedArr.push(word.toLowerCase());
+					//trace(word.toLowerCase());
+					sortedArr[sortedArr.length] = {a: word.toLowerCase(), b:item }; 
+				}
+			}
+			/*for each (var obj:Object in sortedArr) 
+			{ 
+				trace(obj["b"][key],);
+			}*/
+			
+			sortedArr.sortOn("a");
+			//trace("=======================================================");
+			for each (var obj:Object in sortedArr) 
+			{ 
+				//trace(obj["b"][key]);
+				returnArr[returnArr.length] = obj.b; 
+			} 
+			return returnArr;
+		}
 		
 	}
 
