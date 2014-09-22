@@ -267,8 +267,17 @@
 		 */
 		public static function convertChar(chineseChar:String):String 
 		{
+				switch(chineseChar) {
+					case "雪":
+						return "x";
+						break;
+					case "讴":
+						return "o";
+						break;
+				}
+			
 				var bytes:ByteArray = new ByteArray();
-				bytes.writeMultiByte(chineseChar.charAt(0), "cn-gb");
+				bytes.writeMultiByte(chineseChar.charAt(0), "gb2312");//cn-gb
 				var n:int = bytes[0] << 8;
 				n += bytes[1];
 				if (isIn(0xB0A1, 0xB0C4, n)) return "a";
@@ -390,15 +399,6 @@
 				else 
 				{
 					word = String(item[key]).charAt(0);
-				}
-				
-				switch(word) {
-					case "雪":
-						word = "x";
-						break;
-					case "讴":
-						word = "o";
-						break;
 				}
 				
 				if (isChinese(word)) {
