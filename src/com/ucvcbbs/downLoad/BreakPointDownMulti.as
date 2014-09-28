@@ -76,7 +76,7 @@ package com.ucvcbbs.downLoad
 			var loadmodel:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			loadmodel.load.close();
 			//db.deleteData(TB_UNFINISH, { url:loadmodel.url } );//不能删，因为有时候下载中也会下载出错
-			db.update(TB_UNFINISH, { isLoading:"false" }, { url:loadmodel.url } );
+			//db.update(TB_UNFINISH, { isLoading:"false" }, { url:loadmodel.url } );
 			//删掉urlDic,loadDict对应的key
 			deleteLoadModel(loadmodel);
 			continueDown();//下一个
@@ -95,7 +95,7 @@ package com.ucvcbbs.downLoad
 			var m:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			m.total = e.bytesTotal;
 			e.target.close();
-			//trace(m.url+" , totalPoint:" + m.total);
+			trace(m.url+" , totalPoint:" + m.total);
 			startDownLoad(m);
 		}
 		/**
@@ -203,10 +203,11 @@ package com.ucvcbbs.downLoad
 		 */
 		private function breakLoadError(e:IOErrorEvent):void 
 		{
+			//trace("errorNum:" + errorNum);
 			errorNum++;
 			var loadmodel:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
 			if (errorNum > 3) {
-				db.update(TB_UNFINISH, { isLoading:"false" }, { url:loadmodel.url } );
+				//db.update(TB_UNFINISH, { isLoading:"false" }, { url:loadmodel.url } );
 				deleteLoadModel(loadmodel);
 				continueDown();//下一个
 				errorNum = 0;
