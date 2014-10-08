@@ -144,6 +144,40 @@ package com.ucvcbbs.utils
 			return pstr;
 		}
 		
+		/**
+		 * 版本号
+		 */
+		public static function get currentAppVersion():String{
+			
+			try
+			{
+				var myClass:Class = getDefinitionByName("flash.desktop.NativeApplication") as Class;
+				var xml:XML =myClass.nativeApplication.applicationDescriptor;
+				var ns:Namespace = xml.namespace();
+				return String(xml.ns::versionNumber);
+			}catch(e:Error)
+			{
+				
+			}
+			return null;
+		}
+		/**
+		 * 程序的ID
+		 */
+		public static function get currentAppIdentifier():String{
+			
+			try
+			{
+				var myClass:Class = getDefinitionByName("flash.desktop.NativeApplication") as Class;
+				var xml:XML =myClass.nativeApplication.applicationDescriptor;
+				var ns:Namespace = xml.namespace();
+				return String(xml.ns::id);
+			}catch(e:Error)
+			{
+				
+			}
+			return null;
+		}
 		
 		//GPS
 	}
