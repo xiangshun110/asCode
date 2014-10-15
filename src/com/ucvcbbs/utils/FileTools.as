@@ -71,7 +71,7 @@
 				var pstr:String="";
 				switch(AppTools.getSystemName()) {
 					case SystemName.WINDOWS:
-						pstr = AppTools.getAppPath();
+						pstr = AppTools.getStoragePath();
 						break;
 					case SystemName.IOS:
 						/*pstr = AppTools.getAppPath();
