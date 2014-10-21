@@ -274,6 +274,9 @@
 					case "讴":
 						return "o";
 						break;
+					case "重":
+						return "c";
+						break;
 				}
 			
 				var bytes:ByteArray = new ByteArray();
