@@ -68,21 +68,7 @@
 			
 			num = str.indexOf("/");
 			if (num != -1) {
-				var pstr:String="";
-				switch(AppTools.getSystemName()) {
-					case SystemName.WINDOWS:
-						pstr = AppTools.getAppPath();
-						break;
-					case SystemName.IOS:
-						/*pstr = AppTools.getAppPath();
-						pstr = AppTools.getParentURL(pstr);
-						pstr += "/Library";*/
-						pstr = AppTools.getStoragePath();
-						break;
-					case SystemName.LINUX:
-						pstr = AppTools.getStoragePath();
-						break;
-				}
+				var pstr:String = AppTools.getStoragePath();
 				return pstr + "/downLoad/" + str.substring(num + 1);
 			}else {
 				return "";
