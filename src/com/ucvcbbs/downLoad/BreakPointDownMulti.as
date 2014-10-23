@@ -108,10 +108,16 @@ package com.ucvcbbs.downLoad
 			if (num != -1) {
 				loadmodel.fileName=tempurl.substring(num + 1);
 			}
-			
-			loadmodel.curFile = new File(FileTools.getPathFromURL(tempurl));
-			loadmodel.tempFile = new File(FileTools.getPathFromURL(tempurl) + ".ucvcbbs");
-			
+			try{
+				loadmodel.curFile = new File(FileTools.getPathFromURL(tempurl));
+				loadmodel.tempFile = new File(FileTools.getPathFromURL(tempurl) + ".ucvcbbs");
+			}catch (e:*) {
+				db.deleteData(TB_UNFINISH, { url:tempurl } );
+				//删掉urlDic,loadDict对应的key
+				deleteLoadModel(loadmodel);
+				continueDown();//下一个
+				return;
+			}
 			//trace("-------------:" + FileTools.getPathFromURL(tempurl));
 			//trace(loadmodel.url,loadmodel.tempFile,loadmodel.tempFile.exists)
 			
