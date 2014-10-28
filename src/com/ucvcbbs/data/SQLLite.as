@@ -47,7 +47,7 @@ package com.ucvcbbs.data
 			if(isRelative){
 				var str:String;
 				
-				switch(AppTools.getSystemName()) {
+				/*switch(AppTools.getSystemName()) {
 					case SystemName.WINDOWS:
 						str = AppTools.getAppPath() + "/" + dbPath;
 						break;
@@ -55,16 +55,13 @@ package com.ucvcbbs.data
 						str = AppTools.getAppPath()+"/"+dbPath;
 						break;
 					case SystemName.IOS://--/Library
-						/*str = AppTools.getAppPath();
-						str = AppTools.getParentURL(str);
-						str += ("/Library/" + dbPath);*/
 						str = AppTools.getStoragePath() + "/" + dbPath;
 						break;
 					case SystemName.LINUX:
 						str = AppTools.getStoragePath() +"/"+dbPath;
 						break;
-				}
-				
+				}*/
+				str = AppTools.getStoragePath() +"/"+dbPath;
 				//str = File.applicationStorageDirectory.nativePath + "/" + dbPath;
 				
 				/*var str:String = File.applicationDirectory.nativePath;
