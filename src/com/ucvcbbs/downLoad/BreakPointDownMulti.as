@@ -43,11 +43,12 @@ package com.ucvcbbs.downLoad
 		}
 		
 		private function init():void {
-			if (AppTools.getSystemName() == SystemName.WINDOWS) {
+			/*if (AppTools.getSystemName() == SystemName.WINDOWS) {
 				db = new SQLLite(AppTools.getDocmentPath()+"/database/download.db",false);
 			}else{
 				db = new SQLLite("database/download.db");
-			}
+			}*/
+			db = new SQLLite("database/download.db");
 			var obj:Object = new Object();
 			obj.url = "TEXT";
 			obj.autoLoad = "TEXT";//false:不自动下载，true:进入下载队列
