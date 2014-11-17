@@ -93,10 +93,14 @@ package com.ucvcbbs.downLoad
 			e.target.removeEventListener(ProgressEvent.PROGRESS, getTotalByte);
 			e.target.removeEventListener(IOErrorEvent.IO_ERROR, lodError);
 			var m:LoadModel = urlDict[loadDict[e.target]] as LoadModel;
-			m.total = e.bytesTotal;
-			e.target.close();
-			trace(m.url+" , totalPoint:" + m.total);
-			startDownLoad(m);
+			if (!m) {
+				continueDown();//下一个
+			}else{
+				m.total = e.bytesTotal;
+				e.target.close();
+				trace(m.url+" , totalPoint:" + m.total);
+				startDownLoad(m);
+			}
 		}
 		/**
 		 * 下载前的准备活动
