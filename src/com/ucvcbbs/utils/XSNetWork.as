@@ -41,11 +41,11 @@ package com.ucvcbbs.utils
 			dataLoader.addEventListener(Event.COMPLETE, dataLoaderComplete);
 			dataLoader.addEventListener(IOErrorEvent.IO_ERROR, dataLoaderError);
 			dataLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, dataLoaderStatus);
-			re.useCache = false;
-			re.cacheResponse = false;
-			trace("当前URL：" + re.url);
+			urlRequest.useCache = false;
+			urlRequest.cacheResponse = false;
+			trace("当前URL：" + urlRequest.url);
 			loaderDic[dataLoader] = callBackFun;
-			dataLoader.load(re);
+			dataLoader.load(urlRequest);
 		}
 		
 		private function dataLoaderStatus(e:HTTPStatusEvent):void 
