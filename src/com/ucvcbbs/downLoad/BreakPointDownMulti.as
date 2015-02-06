@@ -349,6 +349,8 @@ package com.ucvcbbs.downLoad
 				trace(url, "url没有值");
 				return;
 			}
+			
+			
 			var ary:Array=db.selectData(TB_UNFINISH, null, { url:url } );
 			if (ary && ary.length) {//有这个URL
 				db.update(TB_UNFINISH, { autoLoad:String(autoDownLoad) }, { url:url } );

@@ -53,6 +53,7 @@
 		 * @return
 		 */
 		public static function getPathFromURL(url:String):String {
+			if (!url) return "";
 			var num:int = url.indexOf("http://");
 			var str:String;
 			if (num != -1) {
