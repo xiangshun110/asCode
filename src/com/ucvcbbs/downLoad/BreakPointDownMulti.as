@@ -350,6 +350,11 @@ package com.ucvcbbs.downLoad
 				return;
 			}
 			
+			//去掉问号后面的字符
+			var num1:int = url.lastIndexOf("?");
+			if (num1 != -1) {
+				url = url.substring(0, num1);
+			}
 			
 			var ary:Array=db.selectData(TB_UNFINISH, null, { url:url } );
 			if (ary && ary.length) {//有这个URL
