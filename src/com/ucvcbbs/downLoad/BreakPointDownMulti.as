@@ -35,7 +35,7 @@ package com.ucvcbbs.downLoad
 		private var loadDict:Dictionary;
 		private var deleteAry:Array = new Array();
 		private var errorNum:int = 0;
-		
+		private var preURL:String;
 		public function BreakPointDownMulti(countMax:int=2) 
 		{
 			_maxCount = countMax;
@@ -349,6 +349,16 @@ package com.ucvcbbs.downLoad
 				trace(url, "url没有值");
 				return;
 			}
+			
+			if (!preURL || preURL == "") {
+				preURL = url;
+			}else {
+				if (preURL == url) {
+					return;
+				}
+			}
+			
+			preURL = url;
 			
 			//去掉问号后面的字符
 			var num1:int = url.lastIndexOf("?");
